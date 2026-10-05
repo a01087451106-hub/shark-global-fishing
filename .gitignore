@@ -1,0 +1,9 @@
+# OS / 편집기
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+
+# Cloudflare / Node
+.wrangler/
+node_modules/

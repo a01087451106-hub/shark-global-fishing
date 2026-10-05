@@ -1,0 +1,110 @@
+/* =========================================================
+   애니메이션
+   ========================================================= */
+
+/* 첫 화면 파도 / 배 / 참치 */
+.title-wave { animation: wave-move 9s linear infinite; }
+.title-wave.w2 { animation-duration: 13s; animation-direction: reverse; }
+@keyframes wave-move {
+    from { transform: translateX(0); }
+    to { transform: translateX(-300px); }
+}
+.title-boat { animation: boat-bob 4s ease-in-out infinite; transform-origin: 320px 320px; }
+@keyframes boat-bob {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(5px) rotate(1deg); }
+}
+.title-tuna { animation: tuna-swim 7s ease-in-out infinite; }
+@keyframes tuna-swim {
+    0%, 100% { transform: translate(0, 0); }
+    50% { transform: translate(-40px, 10px); }
+}
+.title-main { animation: title-in 1s ease-out both; }
+@keyframes title-in {
+    from { opacity: 0; transform: translateY(20px) scale(0.96); }
+    to { opacity: 1; transform: none; }
+}
+.btn-start.ready { animation: start-glow 1.8s ease-in-out infinite; }
+@keyframes start-glow {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.04); }
+}
+
+/* 지도 마커 */
+.marker .pulse { animation: pulse 2.2s ease-out infinite; transform-box: fill-box; transform-origin: center; }
+.marker.dim .pulse, .marker.locked .pulse { animation: none; opacity: 0; }
+@keyframes pulse {
+    0% { transform: scale(0.4); opacity: 0.9; }
+    100% { transform: scale(1.4); opacity: 0; }
+}
+
+/* 화면 전환 */
+.screen.active { animation: screen-in 0.25s ease-out; }
+@keyframes screen-in {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: none; }
+}
+.screen-title.active, .screen-fishing.active { animation: none; }
+
+/* 모달 */
+.modal.show .modal-box { animation: modal-in 0.25s cubic-bezier(.2, 1.4, .4, 1); }
+@keyframes modal-in {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: none; }
+}
+
+/* HIT 큰 글자 */
+.big-text.show { animation: big-text 1.4s ease-out forwards; }
+@keyframes big-text {
+    0% { opacity: 0; transform: translate(-50%, -50%) scale(2.4); }
+    15% { opacity: 1; transform: translate(-50%, -50%) scale(0.95); }
+    25% { transform: translate(-50%, -50%) scale(1.05); }
+    75% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+    100% { opacity: 0; transform: translate(-50%, -60%) scale(1); }
+}
+
+/* 콤보 / 토스트 */
+.combo.pop { animation: combo-pop 1.1s ease-out forwards; }
+@keyframes combo-pop {
+    0% { opacity: 0; transform: translate(-50%, 10px) scale(0.8); }
+    20% { opacity: 1; transform: translate(-50%, 0) scale(1.1); }
+    70% { opacity: 1; transform: translate(-50%, -6px) scale(1); }
+    100% { opacity: 0; transform: translate(-50%, -16px) scale(1); }
+}
+
+/* 화면 흔들림 */
+.stage.shake { animation: shake 0.5s linear; }
+.stage.shake-strong { animation: shake-strong 0.9s linear; }
+@keyframes shake {
+    0%, 100% { transform: translate(0, 0); }
+    20% { transform: translate(-6px, 3px); }
+    40% { transform: translate(6px, -3px); }
+    60% { transform: translate(-4px, 2px); }
+    80% { transform: translate(3px, -1px); }
+}
+@keyframes shake-strong {
+    0%, 100% { transform: translate(0, 0); }
+    10% { transform: translate(-14px, 6px) rotate(-0.6deg); }
+    20% { transform: translate(12px, -8px) rotate(0.6deg); }
+    30% { transform: translate(-12px, 4px); }
+    40% { transform: translate(10px, -6px) rotate(0.4deg); }
+    50% { transform: translate(-8px, 6px); }
+    60% { transform: translate(8px, -4px); }
+    70% { transform: translate(-6px, 3px); }
+    85% { transform: translate(3px, -2px); }
+}
+
+/* 위험 배너 깜빡임 */
+.banner.danger { animation: blink 0.5s steps(2) infinite; }
+@keyframes blink { 50% { opacity: 0.6; } }
+
+/* 신기록 */
+.new-record { animation: record 1s ease-in-out infinite alternate; }
+@keyframes record {
+    from { transform: scale(1); }
+    to { transform: scale(1.08); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; }
+}

@@ -1,0 +1,99 @@
+/* =========================================================
+   반응형 (태블릿 / 스마트폰)
+   ========================================================= */
+
+/* 터치 기기에서는 키보드 단축키 표시 숨김 */
+@media (hover: none) {
+    .cb-key { display: none; }
+}
+
+@media (max-width: 900px) {
+    .menu-grid { grid-template-columns: repeat(2, 1fr); }
+    .menu-main { grid-column: span 2; }
+    .hist-row { grid-template-columns: auto 1fr 1fr; }
+    .hist-row .muted:nth-of-type(n) { grid-column: auto; }
+}
+
+@media (max-width: 640px) {
+    :root { --header-h: 52px; }
+    .site-header { padding: 0 10px; }
+    .brand { gap: 6px; }
+    .brand span { font-size: 0.72rem; letter-spacing: 0.01em; overflow: hidden; text-overflow: ellipsis; }
+    .map-hint { font-size: 0.62rem; padding: 2px 6px; }
+    .brand-logo { width: 26px; height: 26px; }
+    .header-links { gap: 4px; }
+    .nav-link { padding: 6px 8px; font-size: 0.72rem; }
+
+    .screen { padding: 14px 12px 30px; }
+    .screen-bar h2 { font-size: 1.12rem; }
+    .screen-bar h2 small { display: none; }
+
+    .title-copy { font-size: 1.02rem; }
+    .btn-start { font-size: 1.2rem; padding: 14px 36px; }
+
+    .menu-btn { padding: 18px 8px; }
+    .menu-btn .mi { font-size: 2rem; }
+    .menu-btn .ml { font-size: 1rem; }
+    .menu-btn small { font-size: 0.72rem; }
+    .menu-main { flex-direction: column; gap: 4px; padding: 22px; }
+    .menu-main .ml { font-size: 1.35rem; }
+
+    .card-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    .region-grid { grid-template-columns: 1fr 1fr; }
+    .fish-card, .dex-card, .gear-card { padding: 10px; }
+    .fc-name, .dex-name { font-size: 1rem; }
+    .gear-name { font-size: 0.9rem; }
+    .gear-actions { flex-wrap: wrap; }
+    .gear-actions .btn { font-size: 0.75rem; padding: 7px 4px; }
+    .rc-name { font-size: 1rem; }
+
+    .method-grid { grid-template-columns: 1fr; gap: 12px; }
+    .method-card { padding: 26px 16px; flex-direction: column; }
+    .mc-icon { font-size: 3rem; }
+    .mc-title { font-size: 1.6rem; }
+
+    .gear-steps { gap: 6px; }
+    .step { padding: 8px; }
+    .step span { font-size: 0.85rem; }
+    .gear-bottom { flex-direction: column; align-items: stretch; text-align: center; }
+    .btn-go { width: 100%; }
+
+    .best-grid { grid-template-columns: 1fr; }
+    .stat-tiles { gap: 8px; }
+    .tile b { font-size: 1.15rem; }
+    .hist-row { grid-template-columns: auto 1fr; font-size: 0.8rem; }
+
+    .detail-grid { grid-template-columns: 1fr; }
+    .detail-grid .span2 { grid-column: auto; }
+    .modal { padding: 10px; }
+    .modal-body { padding: 18px 14px; }
+
+    .fish-hud { font-size: 0.8rem; padding: 6px 10px; }
+    .hud-right { width: 100%; }
+    .depth-meter { font-size: 0.78rem; padding: 4px 8px; }
+    .depth-meter.is-sonar { min-width: 128px; padding: 6px 8px; }
+    .sn-row { min-height: 17px; grid-template-columns: 30px 1fr auto; }
+    .reel-solo .btn { width: 100%; }
+    .depth-meter b { font-size: 1.1rem; }
+    .fight-hud { width: 62%; padding: 8px; }
+    .fh-row label { width: 52px; font-size: 0.68rem; }
+    .banner { font-size: 0.82rem; padding: 6px 12px; border-radius: 14px; }
+    .controls { min-height: 88px; padding: 10px; gap: 10px; }
+    .ctrl-btn { min-height: 68px; }
+    .cb-label { font-size: 1.3rem; }
+    .fishing-foot { gap: 6px; }
+    .fishing-foot .btn-sm { padding: 5px 8px; font-size: 0.74rem; }
+}
+
+@media (max-width: 380px) {
+    .brand span { display: none; }
+    .card-grid { grid-template-columns: 1fr 1fr; }
+}
+
+/* 가로로 눕힌 스마트폰: 낚시 화면 공간 확보 */
+@media (max-height: 500px) and (orientation: landscape) {
+    .fishing-foot { display: none; }
+    .controls { min-height: 70px; padding: 6px 10px; }
+    .ctrl-btn { min-height: 56px; }
+    .fish-hud { padding: 4px 10px; }
+}
