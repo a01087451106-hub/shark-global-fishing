@@ -10,6 +10,7 @@ const App = {
 
     init() {
         Sound.init();
+        Haptic.init();
         I18N.applyStatic();
         this.applyLinks();
         this.initTitle();
@@ -35,6 +36,7 @@ const App = {
     /* 언어가 바뀌면 지금 보고 있는 화면을 다시 그림 */
     relocalize() {
         this.updateSoundBtn();
+        this.updateHapticBtn();
         if (this.refreshTitle) this.refreshTitle();
         switch (this.current) {
             case "menu": this.renderMenu(); break;
@@ -125,7 +127,37 @@ const App = {
             Sound.click();
         });
         U.$("#btn-reset").addEventListener("click", () => { Sound.click(); this.confirmReset(); });
+        U.$("#btn-haptic").addEventListener("click", () => {
+            Sound.click();
+            Haptic.setEnabled(!Haptic.enabled);
+            this.updateHapticBtn();
+            if (Haptic.enabled) Haptic.buzz([60, 60, 60]);     // 켜면 바로 진동 확인
+        });
+        U.$("#diff-select").addEventListener("click", e => {
+            const b = e.target.closest("[data-diff]");
+            if (!b) return;
+            Sound.click();
+            Store.setDifficulty(b.dataset.diff);
+            Haptic.buzz(b.dataset.diff === "hard" ? [80, 40, 80] : [40]);
+            this.renderDifficulty();
+        });
         this.updateSoundBtn();
+        this.updateHapticBtn();
+    },
+
+    updateHapticBtn() {
+        U.$("#btn-haptic").textContent = Haptic.enabled ? L("📳 손맛 진동 ON", "📳 Vibration ON") : L("📴 손맛 진동 OFF", "📴 Vibration OFF");
+    },
+
+    /* 난이도 하 · 중 · 상 선택 (config.js 의 DIFFICULTY) */
+    renderDifficulty() {
+        const cur = Game.difficultyId();
+        U.$("#diff-select").innerHTML = `<div class="diff-title">${L("난이도", "Difficulty")}</div>
+            <div class="diff-btns">${Object.keys(CONFIG.DIFFICULTY).map(id => {
+                const d = CONFIG.DIFFICULTY[id];
+                return `<button class="diff-btn diff-${id} ${id === cur ? "active" : ""}" data-diff="${id}">
+                    <b>${L(d.label, d.labelEn)}</b><small>${U.escape(L(d.desc, d.descEn))}</small></button>`;
+            }).join("")}</div>`;
     },
 
     updateSoundBtn() {
@@ -147,6 +179,7 @@ const App = {
             ? `<span class="badge badge-exp">TUNA EXPEDITION OPEN</span>`
             : `<span>${L(`🔒 TUNA EXPEDITION 오픈까지 ${need - total}마리`, `🔒 TUNA EXPEDITION opens in ${need - total} more fish`)}</span>`);
         U.$("#menu-notes").innerHTML = notes.map(n => `<div>${n}</div>`).join("");
+        this.renderDifficulty();
         U.$("#menu-total").textContent = total;
     },
 
@@ -178,6 +211,10 @@ const App = {
                     <li><b>🎯 CASTING / ⚓ JIGGING</b> 낚시 방법을 고르세요.</li>
                     <li><b>🎒 장비 3개</b> 낚시대 → 릴 → 루어. 모르겠으면 <b>⭐ 추천 장비로 시작</b>!</li>
                 </ol>
+                <h4>🎚 난이도 하 · 중 · 상</h4>
+                <p>메인 메뉴에서 고를 수 있어요. <b>상</b>은 텐션이 금방 차오르고, 물고기가 더 오래 버티고, 입질도 적지만 <b>대물 확률이 올라가요</b>.</p>
+                <h4>📳 손맛</h4>
+                <p>휴대폰으로 하면 파이팅 중에 진동으로 손맛이 느껴져요. 드랙이 풀릴 때 "지이익", 헤드쉐이크 "툭툭", 감을 때 "꾹꾹". (아이폰은 진동 미지원)</p>
                 <h4>⚓ JIGGING</h4>
                 <p>화면의 <b>TARGET DEPTH</b>(목표수심)를 확인하세요. <b>DROP</b>을 누를 때마다 지그가 20 → 30 → 40 → 50 → 60m로 한 단계씩 내려가요.
                 <b>REEL</b>은 한 단계 위로 올려요. 목표수심에 맞으면 <b>DEPTH MATCH!</b> → <b>JERK</b>를 톡! 톡! 눌러 입질을 받으세요.</p>
@@ -203,6 +240,10 @@ const App = {
                     <li><b>🎯 CASTING / ⚓ JIGGING</b> Pick a fishing method.</li>
                     <li><b>🎒 3 pieces of gear</b> Rod → Reel → Lure. Not sure? Use <b>⭐ Start with Recommended Gear</b>!</li>
                 </ol>
+                <h4>🎚 Difficulty EASY · NORMAL · HARD</h4>
+                <p>Choose it in the main menu. On <b>HARD</b> tension builds fast, fish fight longer and bite less, but <b>trophy chances go up</b>.</p>
+                <h4>📳 Feel the fight</h4>
+                <p>On a phone you feel the fight through vibration: drag screaming on runs, thumps on head shakes, heavy pulses as you reel. (Not supported on iPhone)</p>
                 <h4>⚓ JIGGING</h4>
                 <p>Check the <b>TARGET DEPTH</b> on screen. Each <b>DROP</b> lowers the jig one step: 20 → 30 → 40 → 50 → 60m.
                 <b>REEL</b> raises it one step. When you reach the target depth you get <b>DEPTH MATCH!</b> → tap <b>JERK</b> to get a bite.</p>
@@ -304,7 +345,7 @@ const App = {
     renderGear() {
         const st = Game.state;
         const { fish, method } = st;
-        U.$("#gear-info").innerHTML = `${U.escape(I18N.name(st.region))} · <b>${U.escape(I18N.name(fish))}</b> · ${U.methodIcon(method)} ${U.methodLabel(method)}`;
+        U.$("#gear-info").innerHTML = `${U.escape(I18N.name(st.region))} · <b>${U.escape(I18N.name(fish))}</b> · ${U.methodIcon(method)} ${U.methodLabel(method)} · <span class="badge badge-diff diff-${Game.difficultyId()}">${L("난이도", "Level")} ${Game.difficultyLabel()}</span>`;
         const steps = [["rod", L("1. 낚시대", "1. Rod")], ["reel", L("2. 릴", "2. Reel")], ["lure", L("3. 루어", "3. Lure")]];
         U.$("#gear-steps").innerHTML = steps.map(([k, label]) => `
             <button class="step ${this.gearStep === k ? "active" : ""} ${st[k] ? "done" : ""}" data-step="${k}">
@@ -413,6 +454,7 @@ const App = {
                     <div>📍 ${U.escape(Records.countryOf(c))} ${U.escape(Records.regionNameOf(c))}</div>
                     <div>${U.methodIcon(c.method)} ${U.methodLabel(c.method)} · ${U.escape(Records.lureNameOf(c))}</div>
                     <div class="muted small">${U.escape(Records.gearNameOf(c, "rod"))} / ${U.escape(Records.gearNameOf(c, "reel"))}</div>
+                    ${c.difficulty ? `<div class="muted small">${L("난이도", "Level")} ${Game.difficultyLabel(c.difficulty)}</div>` : ""}
                 </div>
                 <p class="ok small">${L("✓ 기록 저장 완료", "✓ Record saved")}</p>
                 <div class="detail-actions">

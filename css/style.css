@@ -161,6 +161,9 @@ body[data-screen="title"] .site-footer, body[data-screen="fishing"] .site-footer
 .badge-exp { background: #3b2a6b; color: #d7c8ff; border: 1px solid #6c56c2; }
 .badge-season { background: rgba(61, 220, 151, 0.18); color: var(--green); border: 1px solid rgba(61, 220, 151, 0.4); }
 .badge-trophy { background: rgba(255, 90, 95, 0.15); color: #ff9da0; border: 1px solid rgba(255, 90, 95, 0.4); }
+.badge-diff { background: rgba(79, 209, 255, 0.12); color: var(--sea-light); border: 1px solid rgba(79, 209, 255, 0.35); }
+.badge-diff.diff-easy { background: rgba(61, 220, 151, 0.14); color: var(--green); border-color: rgba(61, 220, 151, 0.4); }
+.badge-diff.diff-hard { background: rgba(255, 90, 95, 0.16); color: #ff9da0; border-color: rgba(255, 90, 95, 0.45); }
 
 .tag {
     position: absolute; top: 10px; left: 10px; z-index: 2;
@@ -208,6 +211,23 @@ body[data-screen="title"] .site-footer, body[data-screen="fishing"] .site-footer
     padding: 12px 14px; background: var(--navy-2); border: 1px solid var(--line); border-radius: var(--radius);
     font-size: 0.88rem; color: #c9d8e8;
 }
+/* 난이도 하 · 중 · 상 */
+.diff-select { display: flex; align-items: center; gap: 14px; margin: -6px 0 18px; }
+.diff-title { font-weight: 900; color: var(--muted); white-space: nowrap; }
+.diff-btns { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; flex: 1; }
+.diff-btn {
+    display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 10px 8px;
+    border-radius: 12px; cursor: pointer; color: var(--white); font-family: inherit;
+    background: var(--navy-2); border: 1px solid var(--line); transition: border-color 0.2s, background 0.2s;
+}
+.diff-btn b { font-size: 1.15rem; }
+.diff-btn small { color: var(--muted); font-size: 0.74rem; text-align: center; }
+.diff-btn:hover { border-color: var(--sea-light); }
+.diff-btn.active { background: var(--sea); border-color: var(--sea-light); }
+.diff-btn.diff-easy.active { background: #11634a; border-color: var(--green); }
+.diff-btn.diff-hard.active { background: #7a1f2a; border-color: var(--red); }
+.diff-btn.active small { color: #dbe9f5; }
+
 .menu-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
 .menu-btn {
     display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;

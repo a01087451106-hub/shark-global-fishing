@@ -14,7 +14,7 @@
 const Battle = {
     s: null,
 
-    /* 밸런스 값 (여기 숫자를 바꾸면 난이도 조절) */
+    /* 기본 밸런스 값 (난이도별 값은 js/config.js 의 DIFFICULTY 가 덮어씀) */
     TUNE: {
         gearBase: 2.4,        // 장비 효과 = gearBase + 장비파워 × gearScale (장비가 좋아도 너무 쉬워지지 않게)
         gearScale: 0.3,
@@ -28,9 +28,10 @@ const Battle = {
 
     start(catchObj, distance) {
         const st = Game.state;
-        const T = this.TUNE;
+        const T = Object.assign({}, this.TUNE, Game.difficulty());   // 난이도 적용
         const gear = Game.gearPower();
         this.s = {
+            T,
             c: catchObj,
             dist: Math.max(distance, 15),
             startDist: Math.max(distance, 15),
@@ -85,7 +86,7 @@ const Battle = {
     update(dt, reeling) {
         const s = this.s;
         if (!s) return "fight";
-        const T = this.TUNE;
+        const T = s.T;
         s.time += dt;
         const staminaK = 0.4 + 0.6 * (s.stamina / 100);
 
@@ -93,7 +94,7 @@ const Battle = {
         if (!s.finalDone && s.dist < 14 && s.stamina > 8 && s.mode !== "run") {
             s.finalDone = true;
             s.mode = "final";
-            s.runPower = 1.2;
+            s.runPower = T.finalPower;
             s.modeT = U.rand(1.6, 2.6);
             s.angleTarget = 1;
         }
@@ -112,11 +113,12 @@ const Battle = {
         else if (shaking) pull = s.c.power * (0.7 + 1.1 * s.shakePulse) * staminaK;
         else pull = s.c.power * 0.45 * staminaK;
         const ratio = pull / s.gearEff;
+        s.ratio = ratio;                        // 손맛(진동) 세기에 사용
 
         /* 목표 텐션 */
         let target;
-        if (reeling) target = 30 + 42 * ratio;
-        else if (running) target = 14 + 58 * (1 - Math.exp(-ratio / 1.4));   // 손을 떼면 드랙이 미끄러지며 라인 보호
+        if (reeling) target = (30 + 42 * ratio) * T.tension;
+        else if (running) target = (14 + 58 * (1 - Math.exp(-ratio / 1.4))) * T.tension;   // 손을 떼면 드랙이 미끄러지며 라인 보호
         else if (shaking) target = 12 + 26 * s.shakePulse;
         else target = 3 + 6 * ratio;
         s.tension += (target - s.tension) * Math.min(1, dt * 5) + U.rand(-1.5, 1.5);
@@ -154,7 +156,7 @@ const Battle = {
         if (s.breakT > T.breakGrace + s.control * 0.08) return "break";
 
         if (s.tension < 9 && s.mode === "rest") s.slackT += dt; else s.slackT = Math.max(0, s.slackT - dt * 2);
-        if (s.slackT > 2.6) return "hookout";
+        if (s.slackT > T.slackLimit) return "hookout";
 
         if (s.dist >= s.lineCap) return "lineout";
 
@@ -170,7 +172,7 @@ const Battle = {
         if (s.mode === "final") return { text: L("마지막 저항!! 손 떼고 버티기!", "Last stand!! Let go and hold on!"), cls: "danger" };
         if (s.mode === "run") return reeling ? { text: L("RUN!! 물고기가 달려요 → 손 떼기!", "RUN!! The fish is running → let go!"), cls: "danger" } : { text: L("드랙 지이이익~ 라인이 풀려요! 기다리세요", "Zzzzz~ drag screaming, line peeling off! Wait..."), cls: "warn" };
         if (s.mode === "shake") return reeling ? { text: L("헤드쉐이크! 잠깐 손 떼기!", "Head shake! Let go for a moment!"), cls: "danger" } : { text: L("머리를 흔들어요... 잠깐만!", "It's shaking its head... hold on!"), cls: "warn" };
-        if (s.slackT > 1.2) return { text: L("라인이 느슨해요! 빨리 감아요!", "Slack line! Reel in fast!"), cls: "warn" };
+        if (s.slackT > s.T.slackLimit * 0.45) return { text: L("라인이 느슨해요! 빨리 감아요!", "Slack line! Reel in fast!"), cls: "warn" };
         return { text: reeling ? L("좋아요! 감아요! 감아요!", "Nice! Reel! Reel!") : L("지금이에요! REEL 누르고 있기!", "Now! Hold REEL!"), cls: "good" };
     },
 

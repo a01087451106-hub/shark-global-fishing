@@ -6,7 +6,9 @@ const Store = {
     KEYS: {
         YOUTUBE: "sharkYoutubeVisited",
         RECORDS: "sharkRecords",
-        SOUND: "sharkSound"
+        SOUND: "sharkSound",
+        DIFFICULTY: "sharkDifficulty",
+        HAPTIC: "sharkHaptic"
     },
 
     get(key, fallback) {
@@ -40,5 +42,14 @@ const Store = {
     clearRecords() { Store.remove(Store.KEYS.RECORDS); },
 
     isSoundOn() { return Store.get(Store.KEYS.SOUND, true) !== false; },
-    setSoundOn(on) { Store.set(Store.KEYS.SOUND, !!on); }
+    setSoundOn(on) { Store.set(Store.KEYS.SOUND, !!on); },
+
+    getDifficulty() {
+        const d = Store.get(Store.KEYS.DIFFICULTY, CONFIG.DEFAULT_DIFFICULTY);
+        return CONFIG.DIFFICULTY[d] ? d : CONFIG.DEFAULT_DIFFICULTY;
+    },
+    setDifficulty(d) { Store.set(Store.KEYS.DIFFICULTY, d); },
+
+    isHapticOn() { return Store.get(Store.KEYS.HAPTIC, true) !== false; },
+    setHapticOn(on) { Store.set(Store.KEYS.HAPTIC, !!on); }
 };

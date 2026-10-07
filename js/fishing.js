@@ -42,6 +42,7 @@ const Fishing = {
         Battle.stop();
         Sound.seaStop();
         Sound.stopAll();
+        Haptic.stop();
         this.reeling = false;
     },
 
@@ -68,6 +69,7 @@ const Fishing = {
         let badge = "";
         if (fish.isTuna && Game.isTunaSeason(region)) badge = `<span class="badge badge-tuna">TUNA SEASON</span>`;
         else if (Game.isFishInSeason(fish)) badge = `<span class="badge badge-season">${L("시즌", "In season")}</span>`;
+        badge += ` <span class="badge badge-diff diff-${Game.difficultyId()}">${L("난이도", "Level")} ${Game.difficultyLabel()}</span>`;
         U.$("#hud-badge").innerHTML = badge;
     },
 
@@ -379,7 +381,7 @@ const Fishing = {
         this.bigText(text, gi >= 3 ? "huge" : "");
         this.shake(gi >= 3 ? "shake-strong" : "shake");
         Sound.hit(gi >= 2);
-        if (navigator.vibrate) navigator.vibrate(gi >= 3 ? [120, 60, 200] : 120);
+        Haptic.hit(gi);
         if (gi >= 3) Sound.dragOn(1);
         const p = this.lurePos();
         this.splash(p.x, Math.min(p.y, this.H - 20), 24);
@@ -402,6 +404,7 @@ const Fishing = {
     updateFight(dt) {
         const res = Battle.update(dt, this.reeling);
         const s = Battle.s;
+        Haptic.fight(dt, s, this.reeling);                      // 손맛 (진동)
         U.$("#fh-tension").style.width = U.clamp(s.tension, 0, 100) + "%";
         U.$("#fh-tension").className = s.tension > 88 ? "danger" : s.tension > 65 ? "warn" : "";
         U.$("#fh-stamina").style.width = s.stamina + "%";
@@ -428,6 +431,7 @@ const Fishing = {
         U.$("#fight-hud").classList.remove("show");
         this.bigText("LANDING!", "");
         Sound.landing();
+        Haptic.landing();
         this.msg(L("랜딩 성공!", "Landed!"), "good");
     },
 
@@ -438,6 +442,7 @@ const Fishing = {
         this.setControls([]);
         U.$("#fight-hud").classList.remove("show");
         Sound.fail();
+        Haptic.fail(reason);
         const info = {
             break: [L("라인 브레이크!", "LINE BREAK!"), L("물고기가 달릴 때(RUN!)는 손을 떼서 드랙이 풀리게 하세요. 텐션 바가 빨간색이 되면 위험!", "When the fish runs (RUN!), let go so the drag can slip. A red tension bar means danger!")],
             hookout: [L("바늘이 빠졌어요 (바레)", "The hook pulled out!"), L("물고기가 쉴 때는 REEL을 계속 누르고 있어야 라인이 느슨해지지 않아요.", "Keep holding REEL while the fish rests so the line doesn't go slack.")],
@@ -503,7 +508,7 @@ const Fishing = {
                 break;
             }
             case "aim":
-                this.gaugeT += dt;
+                this.gaugeT += dt * Game.difficulty().gaugeSpeed;   // 난이도: 상일수록 게이지가 빠름
                 this.drawGauge();
                 break;
             case "flying":
@@ -582,11 +587,21 @@ const Fishing = {
     get surfaceY() { return this.H * 0.26; },
     get boatX() { return Math.max(70, this.W * 0.13); },
     get tip() {
-        let bend = 0;
-        if (this.phase === "fight" && Battle.s) bend = Battle.s.tension / 100;
-        if (this.phase === "hit") bend = 0.8;
+        let bend = 0, jit = 0;
+        const s = Battle.s;
+        if (this.phase === "fight" && s) {
+            bend = s.tension / 100;
+            /* 손맛: 질주할 때는 잘게, 헤드쉐이크 때는 크게 낚싯대 끝이 떨림 */
+            if (s.mode === "run" || s.mode === "final") jit = 1 + (s.ratio || 0.5) * 1.6;
+            else if (s.mode === "shake") jit = s.shakePulse * 5;
+            else jit = s.tension / 80;
+        }
+        if (this.phase === "hit") { bend = 0.8; jit = 3; }
         const bx = this.boatX;
-        return { x: bx + 70 - bend * 18, y: this.surfaceY - 78 + bend * 40 };
+        return {
+            x: bx + 70 - bend * 18 + Math.sin(this.t * 53) * jit,
+            y: this.surfaceY - 78 + bend * 40 + Math.cos(this.t * 61) * jit * 1.3
+        };
     },
 
     depthToY(d) {

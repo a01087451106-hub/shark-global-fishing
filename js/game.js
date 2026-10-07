@@ -17,6 +17,14 @@ const Game = {
     rodById(id) { return this.D().rods.find(r => r.id === id); },
     reelById(id) { return this.D().reels.find(r => r.id === id); },
 
+    /* 현재 난이도 설정 (config.js 의 DIFFICULTY) */
+    difficultyId() { return Store.getDifficulty(); },
+    difficulty() { return CONFIG.DIFFICULTY[this.difficultyId()]; },
+    difficultyLabel(id) {
+        const d = CONFIG.DIFFICULTY[id || this.difficultyId()];
+        return d ? L(d.label, d.labelEn) : "";
+    },
+
     month() {
         return CONFIG.SEASON_MONTH || (new Date().getMonth() + 1);
     },
@@ -80,6 +88,7 @@ const Game = {
             f *= this.isTunaSeason(region) ? region.tunaSeason.hitBoost : region.tunaSeason.offSeasonHit;
         }
         if (fish.bestMethod === method) f *= 1.1;
+        f *= this.difficulty().hitRate;                                                // 난이도
         return f;
     },
 
@@ -101,6 +110,7 @@ const Game = {
         if (this.getDailyHitLure(region, fish, method) === lure.id) m *= 1.5;          // 오늘의 히트 루어
         m *= this.gearPower() >= fish.recommendedPower ? 1.1 : 0.85;                   // 장비 궁합
         m *= 0.85 + 0.4 * U.clamp(ctx.playScore || 0, 0, 1);                           // 플레이 타이밍(액션)
+        m *= this.difficulty().luck;                                                   // 난이도 (상일수록 대물 UP)
         return U.clamp(m, 0.4, 6);
     },
 
@@ -131,6 +141,7 @@ const Game = {
             regionId: region.id, regionName: region.name, country: region.country,
             method, rodName: rod.name, rodId: rod.id, reelName: reel.name, reelId: reel.id, lureName: lure.name, lureId: lure.id,
             luck: Math.round(m * 100) / 100,
+            difficulty: this.difficultyId(),
             date: Date.now()
         };
     },
