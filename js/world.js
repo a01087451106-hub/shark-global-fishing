@@ -89,12 +89,12 @@ const World = {
         const areas = Game.D().areas;
         container.innerHTML = `
             <div class="area-chips">
-                ${areas.map(a => `<button class="chip-btn ${a.id === this.area ? "active" : ""}" data-area="${a.id}">${U.escape(a.name)}</button>`).join("")}
+                ${areas.map(a => `<button class="chip-btn ${a.id === this.area ? "active" : ""}" data-area="${a.id}">${U.escape(I18N.name(a))}</button>`).join("")}
                 <button class="chip-btn chip-tuna ${this.area === "expedition" ? "active" : ""}" data-area="expedition">🐟 TUNA EXPEDITION</button>
             </div>
             <div class="map-wrap">
                 <svg class="world-map" id="world-svg" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet"></svg>
-                <div class="map-hint">지도의 점이나 아래 카드를 눌러 지역을 선택하세요</div>
+                <div class="map-hint">${L("지도의 점이나 아래 카드를 눌러 지역을 선택하세요", "Tap a dot on the map or a card below to choose a region")}</div>
             </div>
             <div class="region-info" id="region-info"></div>
             <h3 class="section-title" id="region-list-title"></h3>
@@ -155,8 +155,9 @@ const World = {
             const rad = (sel ? 9 : 6) * k;
             let label = "";
             if ((zoomed && active) || sel) {
-                const L = placeLabel(x, y, rad, r.name);
-                label = `<text x="${L.dx}" y="${L.dy}" font-size="${fs}" text-anchor="${L.anchor}">${U.escape(r.name)}</text>`;
+                const name = I18N.name(r);
+                const pos = placeLabel(x, y, rad, name);
+                label = `<text x="${pos.dx}" y="${pos.dy}" font-size="${fs}" text-anchor="${pos.anchor}">${U.escape(name)}</text>`;
             }
             return `<g class="marker ${active ? "" : "dim"} ${locked ? "locked" : ""} ${tuna ? "tuna" : ""} ${sel ? "sel" : ""}" data-id="${r.id}" transform="translate(${x.toFixed(2)} ${y.toFixed(2)})">
                 <circle class="pulse" r="${rad * 2}" />
@@ -205,18 +206,18 @@ const World = {
         box.innerHTML = `
             <div class="ri-head">
                 <div>
-                    <div class="muted">${U.escape(r.country)} · ${U.escape(r.continent)}</div>
-                    <h3>${U.escape(r.name)}</h3>
+                    <div class="muted">${U.escape(I18N.f(r, "country"))} · ${U.escape(r.continent)}</div>
+                    <h3>${U.escape(I18N.name(r))}</h3>
                     ${this.badges(r)}
                 </div>
-                <div class="ri-diff">난이도<br><b>${U.stars(r.difficulty)}</b></div>
+                <div class="ri-diff">${L("난이도", "Difficulty")}<br><b>${U.stars(r.difficulty)}</b></div>
             </div>
-            <p>${U.escape(r.description || "")}</p>
-            <div class="ri-fish">${fish.map(f => `<span class="mini-fish" title="${U.escape(f.name)}">${U.fishSVG(f)}<small>${U.escape(f.name)}</small></span>`).join("")}</div>
-            <div class="ri-meta">지깅 수심 ${CONFIG.JIG_DEPTHS.join(" · ")}m · ${r.fishingTypes.map(U.methodLabel).join(" / ")}</div>
+            <p>${U.escape(I18N.f(r, "description"))}</p>
+            <div class="ri-fish">${fish.map(f => `<span class="mini-fish" title="${U.escape(I18N.name(f))}">${U.fishSVG(f)}<small>${U.escape(I18N.name(f))}</small></span>`).join("")}</div>
+            <div class="ri-meta">${L("지깅 수심", "Jigging depth")} ${CONFIG.JIG_DEPTHS.join(" · ")}m · ${r.fishingTypes.map(U.methodLabel).join(" / ")}</div>
             ${locked
-                ? `<button class="btn btn-locked" disabled>🔒 물고기 ${CONFIG.EXPEDITION_UNLOCK_CATCHES}마리를 잡으면 열려요 (현재 ${Records.totalCount()}마리)</button>`
-                : `<button class="btn btn-primary btn-lg" id="btn-region-go">🎣 ${U.escape(r.name)}에서 낚시하기</button>`}`;
+                ? `<button class="btn btn-locked" disabled>${L(`🔒 물고기 ${CONFIG.EXPEDITION_UNLOCK_CATCHES}마리를 잡으면 열려요 (현재 ${Records.totalCount()}마리)`, `🔒 Opens after catching ${CONFIG.EXPEDITION_UNLOCK_CATCHES} fish (now ${Records.totalCount()})`)}</button>`
+                : `<button class="btn btn-primary btn-lg" id="btn-region-go">${L(`🎣 ${U.escape(r.name)}에서 낚시하기`, `🎣 Fish in ${U.escape(I18N.name(r))}`)}</button>`}`;
         const go = document.getElementById("btn-region-go");
         if (go) go.onclick = () => { Sound.click(); this.onPick && this.onPick(r); };
     },
@@ -225,14 +226,14 @@ const World = {
         const list = this.regionsIn(this.area);
         const area = Game.D().areas.find(a => a.id === this.area);
         document.getElementById("region-list-title").textContent =
-            (this.area === "expedition" ? "TUNA EXPEDITION" : (area ? area.name : "")) + ` · ${list.length}개 지역`;
+            (this.area === "expedition" ? "TUNA EXPEDITION" : (area ? I18N.name(area) : "")) + L(` · ${list.length}개 지역`, ` · ${list.length} regions`);
         const grid = document.getElementById("region-grid");
         grid.innerHTML = list.map(r => {
             const locked = !Game.isRegionUnlocked(r);
-            const fish = Game.regionFish(r).map(f => f.name).join(" · ");
+            const fish = Game.regionFish(r).map(f => I18N.name(f)).join(" · ");
             return `<div class="region-card ${locked ? "locked" : ""} ${r.id === this.selectedId ? "selected" : ""}" data-id="${r.id}">
-                <div class="rc-top"><span class="muted">${U.escape(r.country)}</span><span class="rc-diff">${U.stars(r.difficulty)}</span></div>
-                <div class="rc-name">${locked ? "🔒 " : ""}${U.escape(r.name)}</div>
+                <div class="rc-top"><span class="muted">${U.escape(I18N.f(r, "country"))}</span><span class="rc-diff">${U.stars(r.difficulty)}</span></div>
+                <div class="rc-name">${locked ? "🔒 " : ""}${U.escape(I18N.name(r))}</div>
                 <div class="rc-badges">${this.badges(r)}</div>
                 <div class="rc-fish">${U.escape(fish)}</div>
             </div>`;

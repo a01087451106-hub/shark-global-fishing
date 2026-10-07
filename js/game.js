@@ -129,7 +129,7 @@ const Game = {
             isTuna: !!fish.isTuna,
             power: fish.fightPower * D.gradePowerMult[grade],
             regionId: region.id, regionName: region.name, country: region.country,
-            method, rodName: rod.name, reelName: reel.name, lureName: lure.name, lureId: lure.id,
+            method, rodName: rod.name, rodId: rod.id, reelName: reel.name, reelId: reel.id, lureName: lure.name, lureId: lure.id,
             luck: Math.round(m * 100) / 100,
             date: Date.now()
         };

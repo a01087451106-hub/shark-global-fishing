@@ -61,13 +61,13 @@ const Fishing = {
 
     hudInfo() {
         const { region, fish, lure, method } = Game.state;
-        U.$("#hud-region").textContent = region.name;
-        U.$("#hud-fish").textContent = fish.name;
+        U.$("#hud-region").textContent = I18N.name(region);
+        U.$("#hud-fish").textContent = I18N.name(fish);
         U.$("#hud-method").textContent = U.methodIcon(method) + " " + U.methodLabel(method);
-        U.$("#hud-lure").textContent = lure.name;
+        U.$("#hud-lure").textContent = I18N.name(lure);
         let badge = "";
         if (fish.isTuna && Game.isTunaSeason(region)) badge = `<span class="badge badge-tuna">TUNA SEASON</span>`;
-        else if (Game.isFishInSeason(fish)) badge = `<span class="badge badge-season">시즌</span>`;
+        else if (Game.isFishInSeason(fish)) badge = `<span class="badge badge-season">${L("시즌", "In season")}</span>`;
         U.$("#hud-badge").innerHTML = badge;
     },
 
@@ -108,11 +108,11 @@ const Fishing = {
             this.shadows = Array.from({ length: 5 }, () => ({
                 d: this.target + U.rand(-3, 3), x: U.rand(0.35, 0.95), v: U.rand(-0.03, 0.03), s: U.rand(0.7, 1.2)
             }));
-            this.setControls([{ id: "drop", label: "⬇ DROP", sub: "지그 내리기", cls: "btn-primary", key: "Space" }]);
-            this.msg(`목표수심 ${this.target}m · ⬇ 지그 내리기`);
+            this.setControls([{ id: "drop", label: "⬇ DROP", sub: L("지그 내리기", "Drop the jig"), cls: "btn-primary", key: "Space" }]);
+            this.msg(L(`목표수심 ${this.target}m · ⬇ 지그 내리기`, `Target depth ${this.target}m · ⬇ Drop the jig`));
         } else {
-            this.setControls([{ id: "cast", label: "🎯 CAST", sub: "던지기", cls: "btn-primary", key: "Space" }]);
-            this.msg(first ? "물고기가 뛰는 '나부라'(물보라)를 찾아 CAST!" : "다시 CAST! 나부라 근처로 던지세요.");
+            this.setControls([{ id: "cast", label: "🎯 CAST", sub: L("던지기", "Throw"), cls: "btn-primary", key: "Space" }]);
+            this.msg(first ? L("물고기가 뛰는 '나부라'(물보라)를 찾아 CAST!", "Find the boiling fish (surface splashes) and CAST!") : L("다시 CAST! 나부라 근처로 던지세요.", "CAST again! Throw near the boiling fish."));
         }
         this.updateDepthMeter();
         U.$("#fight-hud").classList.remove("show");
@@ -197,14 +197,14 @@ const Fishing = {
     workControls() {
         if (this.method === "jigging") {
             this.setControls([
-                { id: "drop", label: "⬇ DROP", sub: "한 단계 아래", cls: "btn-primary", key: "↓" },
-                { id: "jerk", label: "⤴ JERK", sub: "톡! 톡!", cls: "btn-accent", key: "J" },
-                { id: "reelup", label: "⟳ REEL", sub: "한 단계 위", cls: "btn-primary", key: "R" }
+                { id: "drop", label: "⬇ DROP", sub: L("한 단계 아래", "One step down"), cls: "btn-primary", key: "↓" },
+                { id: "jerk", label: "⤴ JERK", sub: L("톡! 톡!", "Tap! Tap!"), cls: "btn-accent", key: "J" },
+                { id: "reelup", label: "⟳ REEL", sub: L("한 단계 위", "One step up"), cls: "btn-primary", key: "R" }
             ]);
         } else {
             this.setControls([
-                { id: "twitch", label: "〰 ACTION", sub: "톡! 톡! 리듬있게", cls: "btn-accent", key: "J" },
-                { id: "reel", label: "⟳ REEL", sub: "누르고 있기", cls: "btn-primary", hold: true, key: "Space" }
+                { id: "twitch", label: "〰 ACTION", sub: L("톡! 톡! 리듬있게", "Tap! Tap! In rhythm"), cls: "btn-accent", key: "J" },
+                { id: "reel", label: "⟳ REEL", sub: L("누르고 있기", "Hold"), cls: "btn-primary", hold: true, key: "Space" }
             ]);
         }
     },
@@ -223,7 +223,7 @@ const Fishing = {
         }
         if (this.phase !== "working") return;
         if (this.stepIdx >= depths.length - 1) {
-            this.toast(`최대 수심 ${depths[depths.length - 1]}m!`, "warn");
+            this.toast(L(`최대 수심 ${depths[depths.length - 1]}m!`, `Max depth ${depths[depths.length - 1]}m!`), "warn");
             return;
         }
         this.stepIdx++;
@@ -249,15 +249,15 @@ const Fishing = {
         if (this.jigTo === this.target) {
             if (!this.matched) {
                 this.matched = true;
-                this.toast("DEPTH MATCH! 수심 적중!", "good");
+                this.toast(L("DEPTH MATCH! 수심 적중!", "DEPTH MATCH!"), "good");
                 Sound.tone(880, 0.15, "triangle", 0.15);
                 this.tryHit(0.3);                       // 폴링 입질
             }
-            if (this.phase === "working") this.msg(`수심 적중! ${this.target}m · JERK! JERK!`, "good");
+            if (this.phase === "working") this.msg(L(`수심 적중! ${this.target}m · JERK! JERK!`, `Depth matched! ${this.target}m · JERK! JERK!`), "good");
         } else if (this.jigTo < this.target) {
-            this.msg(`목표수심 ${this.target}m · ⬇ 지그 내리기`);
+            this.msg(L(`목표수심 ${this.target}m · ⬇ 지그 내리기`, `Target depth ${this.target}m · ⬇ Drop the jig`));
         } else {
-            this.msg(`목표수심 ${this.target}m · ⟳ REEL로 올리기`);
+            this.msg(L(`목표수심 ${this.target}m · ⟳ REEL로 올리기`, `Target depth ${this.target}m · ⟳ REEL it up`));
         }
     },
 
@@ -275,8 +275,8 @@ const Fishing = {
         this.phase = "aim";
         this.gaugeT = 0;
         U.$("#cast-gauge").classList.add("show");
-        this.setControls([{ id: "release", label: "🎯 STOP!", sub: "지금 던지기", cls: "btn-primary", key: "Space" }]);
-        this.msg("게이지가 원하는 거리에 왔을 때 STOP! (초록 표시 = 나부라 위치)");
+        this.setControls([{ id: "release", label: "🎯 STOP!", sub: L("지금 던지기", "Throw now"), cls: "btn-primary", key: "Space" }]);
+        this.msg(L("게이지가 원하는 거리에 왔을 때 STOP! (초록 표시 = 나부라 위치)", "STOP! when the gauge reaches your distance (green mark = boiling fish)"));
     },
 
     releaseCast() {
@@ -287,7 +287,7 @@ const Fishing = {
         this.phase = "flying";
         this.flyT = 0;
         this.setControls([]);
-        this.msg("휘익~!");
+        this.msg(L("휘익~!", "Whoosh~!"));
         Sound.tone(600, 0.4, "sine", 0.1, 1200);
     },
 
@@ -300,10 +300,10 @@ const Fishing = {
         const near = this.nearestBoil();
         const d = near ? Math.abs(near.dist - this.dist) : 99;
         this.castScore = U.clamp(1 - d / 30, 0, 1);
-        if (d < 8) this.toast("NICE CAST! 나부라 정면!", "good");
+        if (d < 8) this.toast(L("NICE CAST! 나부라 정면!", "NICE CAST! Right on the boil!"), "good");
         else if (d < 18) this.toast("GOOD CAST!", "good");
         this.workControls();
-        this.msg("ACTION으로 펜슬을 움직이고, REEL로 감으세요!");
+        this.msg(L("ACTION으로 펜슬을 움직이고, REEL로 감으세요!", "Work the pencil with ACTION and wind with REEL!"));
     },
 
     doTwitch() {
@@ -383,7 +383,7 @@ const Fishing = {
         if (gi >= 3) Sound.dragOn(1);
         const p = this.lurePos();
         this.splash(p.x, Math.min(p.y, this.H - 20), 24);
-        this.msg(st.fish.name + " 히트! 파이팅 준비!");
+        this.msg(L(st.fish.name + " 히트! 파이팅 준비!", I18N.name(st.fish) + " on! Get ready to fight!"));
         setTimeout(() => {
             if (!this.active || this.phase !== "hit") return;
             this.startFight();
@@ -396,7 +396,7 @@ const Fishing = {
         Battle.start(this.catchObj, d);
         this.phase = "fight";
         U.$("#fight-hud").classList.add("show");
-        this.setControls([{ id: "reel", label: "⟳ REEL", sub: "누르고 있기 · RUN! 때는 손 떼기", cls: "btn-primary btn-wide", hold: true, key: "Space" }]);
+        this.setControls([{ id: "reel", label: "⟳ REEL", sub: L("누르고 있기 · RUN! 때는 손 떼기", "Hold · let go on RUN!"), cls: "btn-primary btn-wide", hold: true, key: "Space" }]);
     },
 
     updateFight(dt) {
@@ -406,7 +406,7 @@ const Fishing = {
         U.$("#fh-tension").className = s.tension > 88 ? "danger" : s.tension > 65 ? "warn" : "";
         U.$("#fh-stamina").style.width = s.stamina + "%";
         U.$("#fh-dist").textContent = Math.max(0, Math.round(s.dist));
-        U.$("#depth-meter").innerHTML = `라인 <b>${Math.max(0, Math.round(s.dist))}</b>m <small>/ ${s.lineCap}m</small>`;
+        U.$("#depth-meter").innerHTML = `${L("라인", "Line")} <b>${Math.max(0, Math.round(s.dist))}</b>m <small>/ ${s.lineCap}m</small>`;
         U.$("#depth-meter").classList.remove("is-sonar");
         this._sonarHTML = "";
         const h = Battle.hint(this.reeling);
@@ -428,7 +428,7 @@ const Fishing = {
         U.$("#fight-hud").classList.remove("show");
         this.bigText("LANDING!", "");
         Sound.landing();
-        this.msg("랜딩 성공!", "good");
+        this.msg(L("랜딩 성공!", "Landed!"), "good");
     },
 
     fail(reason) {
@@ -439,9 +439,9 @@ const Fishing = {
         U.$("#fight-hud").classList.remove("show");
         Sound.fail();
         const info = {
-            break: ["라인 브레이크!", "물고기가 달릴 때(RUN!)는 손을 떼서 드랙이 풀리게 하세요. 텐션 바가 빨간색이 되면 위험!"],
-            hookout: ["바늘이 빠졌어요 (바레)", "물고기가 쉴 때는 REEL을 계속 누르고 있어야 라인이 느슨해지지 않아요."],
-            lineout: ["라인이 모두 풀렸어요!", "더 강한 릴(POWER ★)을 쓰거나, 물고기가 쉴 때 부지런히 감아주세요."]
+            break: [L("라인 브레이크!", "LINE BREAK!"), L("물고기가 달릴 때(RUN!)는 손을 떼서 드랙이 풀리게 하세요. 텐션 바가 빨간색이 되면 위험!", "When the fish runs (RUN!), let go so the drag can slip. A red tension bar means danger!")],
+            hookout: [L("바늘이 빠졌어요 (바레)", "The hook pulled out!"), L("물고기가 쉴 때는 REEL을 계속 누르고 있어야 라인이 느슨해지지 않아요.", "Keep holding REEL while the fish rests so the line doesn't go slack.")],
+            lineout: [L("라인이 모두 풀렸어요!", "Spooled! All the line is gone!"), L("더 강한 릴(POWER ★)을 쓰거나, 물고기가 쉴 때 부지런히 감아주세요.", "Use a stronger reel (POWER ★), or reel hard whenever the fish rests.")]
         }[reason];
         this.bigText(info[0], "fail");
         setTimeout(() => App.showFail(info[0], info[1], this.catchObj), 1400);
@@ -495,7 +495,7 @@ const Fishing = {
                 if (this.depth < prev) Sound.reel();
                 if (prev !== this.depth && this.jigArrived()) this.onJigArrive();
                 if (this.phase === "working" && this.jigTo === 0 && this.depth <= 0.3) {
-                    this.toast("지그 회수!", "");
+                    this.toast(L("지그 회수!", "Jig retrieved!"), "");
                     this.newRound(false);
                     break;
                 }
@@ -519,7 +519,7 @@ const Fishing = {
                 }
                 this.updateDepthMeter();
                 if (this.phase === "retrieve" && this.dist <= 5) {
-                    this.toast("루어 회수!", "", 1000);
+                    this.toast(L("루어 회수!", "Lure retrieved!"), "", 1000);
                     this.newRound(false);
                 }
                 break;
@@ -561,7 +561,7 @@ const Fishing = {
             if (this._sonarHTML !== html) { el.innerHTML = html; this._sonarHTML = html; }
             el.classList.add("is-sonar");
         } else {
-            el.innerHTML = `거리 <b>${Math.round(this.dist)}</b>m`;
+            el.innerHTML = `${L("거리", "Distance")} <b>${Math.round(this.dist)}</b>m`;
             el.classList.remove("is-sonar");
         }
     },

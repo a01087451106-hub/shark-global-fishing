@@ -166,12 +166,12 @@ const Battle = {
     hint(reeling) {
         const s = this.s;
         if (!s) return "";
-        if (s.tension > 88) return { text: "⚠ 텐션 위험! 손을 떼세요!", cls: "danger" };
-        if (s.mode === "final") return { text: "마지막 저항!! 손 떼고 버티기!", cls: "danger" };
-        if (s.mode === "run") return reeling ? { text: "RUN!! 물고기가 달려요 → 손 떼기!", cls: "danger" } : { text: "드랙 지이이익~ 라인이 풀려요! 기다리세요", cls: "warn" };
-        if (s.mode === "shake") return reeling ? { text: "헤드쉐이크! 잠깐 손 떼기!", cls: "danger" } : { text: "머리를 흔들어요... 잠깐만!", cls: "warn" };
-        if (s.slackT > 1.2) return { text: "라인이 느슨해요! 빨리 감아요!", cls: "warn" };
-        return { text: reeling ? "좋아요! 감아요! 감아요!" : "지금이에요! REEL 누르고 있기!", cls: "good" };
+        if (s.tension > 88) return { text: L("⚠ 텐션 위험! 손을 떼세요!", "⚠ Tension danger! Let go!"), cls: "danger" };
+        if (s.mode === "final") return { text: L("마지막 저항!! 손 떼고 버티기!", "Last stand!! Let go and hold on!"), cls: "danger" };
+        if (s.mode === "run") return reeling ? { text: L("RUN!! 물고기가 달려요 → 손 떼기!", "RUN!! The fish is running → let go!"), cls: "danger" } : { text: L("드랙 지이이익~ 라인이 풀려요! 기다리세요", "Zzzzz~ drag screaming, line peeling off! Wait..."), cls: "warn" };
+        if (s.mode === "shake") return reeling ? { text: L("헤드쉐이크! 잠깐 손 떼기!", "Head shake! Let go for a moment!"), cls: "danger" } : { text: L("머리를 흔들어요... 잠깐만!", "It's shaking its head... hold on!"), cls: "warn" };
+        if (s.slackT > 1.2) return { text: L("라인이 느슨해요! 빨리 감아요!", "Slack line! Reel in fast!"), cls: "warn" };
+        return { text: reeling ? L("좋아요! 감아요! 감아요!", "Nice! Reel! Reel!") : L("지금이에요! REEL 누르고 있기!", "Now! Hold REEL!"), cls: "good" };
     },
 
     stop() {

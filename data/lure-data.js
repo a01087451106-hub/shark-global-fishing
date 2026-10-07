@@ -22,109 +22,109 @@ window.SHARK_DATA = window.SHARK_DATA || {};
 SHARK_DATA.lures = [
     /* ================= CASTING : PENCIL ================= */
     {
-        id: "seadrop_fs150", name: "씨드롭 FS150 95g 싱킹펜슬", brand: "SEADROP",
+        id: "seadrop_fs150", name: "씨드롭 FS150 95g 싱킹펜슬", nameEn: "SEADROP FS150 95g Sinking Pencil", brand: "SEADROP",
         type: "SINKING PENCIL", fishingMethod: "casting", weight: 95,
         targetFish: ["amberjack", "yellowtail", "spanish_mackerel", "tuna", "kingfish", "yellowfin", "gt", "mahimahi"],
         recommendedRegions: ["chujado", "wangdolcho", "jeju", "namhae"],
         image: "", purchaseUrl: "",
-        gamePower: 4, gameAction: "S자 슬라이드", rarityBonus: 0.1, color: "#4fa3d9"
+        gamePower: 4, gameAction: "S자 슬라이드", gameActionEn: "S-Slide", rarityBonus: 0.1, color: "#4fa3d9"
     },
     {
-        id: "moral_kings", name: "모랄 킹스", brand: "MORAL",
+        id: "moral_kings", name: "모랄 킹스", nameEn: "MORAL Kings", brand: "MORAL",
         type: "PENCIL", fishingMethod: "casting", weight: null,
         targetFish: ["amberjack", "yellowtail", "tuna", "gt", "yellowfin", "bluefin", "marlin"],
         recommendedRegions: ["danjo", "goto", "seychelles", "maldives"],
         image: "", purchaseUrl: "",
-        gamePower: 4, gameAction: "와이드 다이브", rarityBonus: 0.15, color: "#e0a526"
+        gamePower: 4, gameAction: "와이드 다이브", gameActionEn: "Wide Dive", rarityBonus: 0.15, color: "#e0a526"
     },
     {
-        id: "moral_longpen", name: "모랄 롱펜", brand: "MORAL",
+        id: "moral_longpen", name: "모랄 롱펜", nameEn: "MORAL Long Pen", brand: "MORAL",
         type: "PENCIL", fishingMethod: "casting", weight: null,
         targetFish: ["spanish_mackerel", "amberjack", "wahoo", "mahimahi", "sailfish", "roosterfish"],
         recommendedRegions: ["wando", "yeosu", "costa_rica", "cabo"],
         image: "", purchaseUrl: "",
-        gamePower: 3.5, gameAction: "롱 다트", rarityBonus: 0.05, color: "#9fd36a"
+        gamePower: 3.5, gameAction: "롱 다트", gameActionEn: "Long Dart", rarityBonus: 0.05, color: "#9fd36a"
     },
     {
-        id: "moral_alban", name: "모랄 알밴 펜슬", brand: "MORAL",
+        id: "moral_alban", name: "모랄 알밴 펜슬", nameEn: "MORAL Alban Pencil", brand: "MORAL",
         type: "PENCIL", fishingMethod: "casting", weight: null,
         targetFish: ["tuna", "bluefin", "yellowfin", "bigeye", "gt", "marlin"],
         recommendedRegions: ["donghae", "hawaii", "nova_scotia", "cape_cod"],
         image: "", purchaseUrl: "",
-        gamePower: 4.5, gameAction: "묵직한 롤링", rarityBonus: 0.2, color: "#d9573b"
+        gamePower: 4.5, gameAction: "묵직한 롤링", gameActionEn: "Heavy Rolling", rarityBonus: 0.2, color: "#d9573b"
     },
     {
-        id: "seadrop_lip140", name: "씨드롭 LIP140", brand: "SEADROP",
+        id: "seadrop_lip140", name: "씨드롭 LIP140", nameEn: "SEADROP LIP140", brand: "SEADROP",
         type: "PENCIL", fishingMethod: "casting", weight: null,
         targetFish: ["amberjack", "gt", "roosterfish", "kingfish", "snapper"],
         recommendedRegions: ["penghu", "panama", "bay_of_islands"],
         image: "", purchaseUrl: "",
-        gamePower: 3.5, gameAction: "워블링 스윔", rarityBonus: 0.1, color: "#f0cf4a"
+        gamePower: 3.5, gameAction: "워블링 스윔", gameActionEn: "Wobbling Swim", rarityBonus: 0.1, color: "#f0cf4a"
     },
     {
-        id: "egi_35", name: "에기 3.5호", brand: "기본 장비",
+        id: "egi_35", name: "에기 3.5호", nameEn: "Egi 3.5", brand: "기본 장비", brandEn: "Basic Gear",
         type: "EGI", fishingMethod: "casting", weight: null,
         targetFish: ["squid"],
         recommendedRegions: ["tongyeong", "geoje", "jeju"],
         image: "", purchaseUrl: "",
-        gamePower: 3.5, gameAction: "샤크리 & 폴링", rarityBonus: 0.1, color: "#ff8a5c"
+        gamePower: 3.5, gameAction: "샤크리 & 폴링", gameActionEn: "Jerk & Fall", rarityBonus: 0.1, color: "#ff8a5c"
     },
 
     /* ================= JIGGING : METAL JIG ================= */
     {
-        id: "seadrop_scale_240", name: "씨드롭 스케일 240g", brand: "SEADROP",
+        id: "seadrop_scale_240", name: "씨드롭 스케일 240g", nameEn: "SEADROP Scale 240g", brand: "SEADROP",
         type: "METAL JIG", fishingMethod: "jigging", weight: 240,
         targetFish: ["amberjack", "yellowtail", "kingfish", "tuna", "dogtooth", "yellowfin", "bigeye", "bluefin", "gt"],
         recommendedRegions: ["wangdolcho", "goto", "okinawa", "maldives"],
         image: "", purchaseUrl: "",
-        gamePower: 4, gameAction: "하이피치 슬라이드", rarityBonus: 0.1, color: "#9fb7c9"
+        gamePower: 4, gameAction: "하이피치 슬라이드", gameActionEn: "High-Pitch Slide", rarityBonus: 0.1, color: "#9fb7c9"
     },
     {
-        id: "seadrop_galchi_xl_300", name: "씨드롭 갈치 XL 300g", brand: "SEADROP",
+        id: "seadrop_galchi_xl_300", name: "씨드롭 갈치 XL 300g", nameEn: "SEADROP Galchi XL 300g", brand: "SEADROP",
         type: "METAL JIG", fishingMethod: "jigging", weight: 300,
         targetFish: ["tuna", "bluefin", "bigeye", "dogtooth", "halibut", "cod", "amberjack"],
         recommendedRegions: ["tsugaru", "donghae", "azores", "norway"],
         image: "", purchaseUrl: "",
-        gamePower: 4.5, gameAction: "롱 폴", rarityBonus: 0.2, color: "#d8dde3"
+        gamePower: 4.5, gameAction: "롱 폴", gameActionEn: "Long Fall", rarityBonus: 0.2, color: "#d8dde3"
     },
     {
-        id: "steel_longjerker_edge", name: "스틸 롱저커 엣지", brand: "",
+        id: "steel_longjerker_edge", name: "스틸 롱저커 엣지", nameEn: "Steel Long Jerker Edge", brand: "",
         type: "METAL JIG", fishingMethod: "jigging", weight: null,
         targetFish: ["amberjack", "yellowtail", "spanish_mackerel", "kingfish", "wahoo", "yellowfin"],
         recommendedRegions: ["wangdolcho", "bay_of_islands", "danjo"],
         image: "", purchaseUrl: "",
-        gamePower: 3.5, gameAction: "롱 저크", rarityBonus: 0.1, color: "#5c86b3"
+        gamePower: 3.5, gameAction: "롱 저크", gameActionEn: "Long Jerk", rarityBonus: 0.1, color: "#5c86b3"
     },
     {
-        id: "realjig_200", name: "리얼지그 200g", brand: "",
+        id: "realjig_200", name: "리얼지그 200g", nameEn: "Real Jig 200g", brand: "",
         type: "METAL JIG", fishingMethod: "jigging", weight: 200,
         targetFish: ["amberjack", "yellowtail", "snapper", "cod", "halibut", "kingfish"],
         recommendedRegions: ["queensland", "iceland", "chujado"],
         image: "", purchaseUrl: "",
-        gamePower: 3.5, gameAction: "리얼 베이트 폴", rarityBonus: 0.05, color: "#c4504a"
+        gamePower: 3.5, gameAction: "리얼 베이트 폴", gameActionEn: "Real Bait Fall", rarityBonus: 0.05, color: "#c4504a"
     },
     {
-        id: "or_seadrop_galchi", name: "오션리퍼블릭 씨드롭 갈치", brand: "OCEAN REPUBLIC",
+        id: "or_seadrop_galchi", name: "오션리퍼블릭 씨드롭 갈치", nameEn: "OCEAN REPUBLIC SEADROP Galchi", brand: "OCEAN REPUBLIC",
         type: "METAL JIG", fishingMethod: "jigging", weight: null,
         targetFish: ["spanish_mackerel", "amberjack", "yellowtail", "tuna", "wahoo", "gt"],
         recommendedRegions: ["wando", "namhae", "jeju"],
         image: "", purchaseUrl: "",
-        gamePower: 4, gameAction: "갈치 플래시", rarityBonus: 0.1, color: "#eef2f6"
+        gamePower: 4, gameAction: "갈치 플래시", gameActionEn: "Cutlassfish Flash", rarityBonus: 0.1, color: "#eef2f6"
     },
     {
-        id: "seadrop_rsc", name: "씨드롭 RSC", brand: "SEADROP",
+        id: "seadrop_rsc", name: "씨드롭 RSC", nameEn: "SEADROP RSC", brand: "SEADROP",
         type: "METAL JIG", fishingMethod: "jigging", weight: null,
         targetFish: ["amberjack", "snapper", "cod", "dogtooth", "gt"],
         recommendedRegions: ["penghu", "mozambique", "madagascar"],
         image: "", purchaseUrl: "",
-        gamePower: 3.5, gameAction: "숏 피치 롤링", rarityBonus: 0.15, color: "#58c08f"
+        gamePower: 3.5, gameAction: "숏 피치 롤링", gameActionEn: "Short-Pitch Rolling", rarityBonus: 0.15, color: "#58c08f"
     },
     {
-        id: "jjukkumi_egi", name: "주꾸미 에기 세트", brand: "기본 장비",
+        id: "jjukkumi_egi", name: "주꾸미 에기 세트", nameEn: "Octopus Egi Set", brand: "기본 장비", brandEn: "Basic Gear",
         type: "OCTOPUS EGI", fishingMethod: "jigging", weight: null,
         targetFish: ["octopus"],
         recommendedRegions: ["seohae", "yeosu", "tongyeong"],
         image: "", purchaseUrl: "",
-        gamePower: 3.5, gameAction: "바닥 톡톡", rarityBonus: 0.1, color: "#ff6fa3"
+        gamePower: 3.5, gameAction: "바닥 톡톡", gameActionEn: "Bottom Tapping", rarityBonus: 0.1, color: "#ff6fa3"
     }
 ];

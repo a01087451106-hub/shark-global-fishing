@@ -64,6 +64,7 @@ shark-global-fishing/
 │   └─ animations.css    애니메이션 (HIT, 화면 흔들림 등)
 ├─ js/
 │   ├─ config.js         ★ 외부 링크 주소 (지깅몰 / 카페 / YouTube)
+│   ├─ i18n.js           한국어 / 영어 전환 (한국 외 국가 접속 시 영어)
 │   ├─ app.js            화면 이동, 메뉴, 결과창
 │   ├─ game.js           시즌, 히트 확률, 크기/등급 계산
 │   ├─ world.js          SVG 세계지도
@@ -144,7 +145,7 @@ const CONFIG = {
 
 `SHARK_DATA.rods` (낚시대) 또는 `SHARK_DATA.reels` (릴) 목록에 같은 방법으로 블록을 복사해 넣습니다.
 
-**등록 기준:** 지깅몰에서 판매 중인 **SHARK 브랜드(샤크컴퍼니) 상품만** 등록합니다.
+**등록 기준:** 낚시대는 지깅몰에서 판매 중인 **SHARK 브랜드(샤크컴퍼니) 상품만** 등록합니다.
 (상품 상세페이지의 "브랜드: SHARK" 확인. NS 등 외부 브랜드는 등록하지 않음)
 
 ```js
@@ -166,7 +167,11 @@ const CONFIG = {
 - JIGGING 선택 → `fishingMethod: "jigging"` 낚시대만, CASTING 선택 → `"casting"` 낚시대만 자동 표시
 - `realSpec`: **실제 제품 스펙** - 지깅몰 상품 페이지에서 확인된 값만 입력 (추측 금지)
 - `gameStats`: **게임 전용 수치** (0~100, 실제 스펙과 별개)
-- 현재 릴은 **앰보스 VJ3 지깅릴** 하나만 사용합니다 (릴 화면에서 자동 선택 → [다음]).
+- 릴: JIGGING은 **앰보스 VJ3 지깅릴** 하나만 사용합니다 (릴 화면에서 자동 선택 → [다음]).
+- CASTING은 VJ3 + [지깅몰 스피닝릴](https://www.jiggingmall.com/goods/goods_list.php?cateCd=001001)의
+  **시마노 · 다이와** 릴 중 **3개를 랜덤으로** 보여줍니다 (`randomPool: true` 인 릴, 낚시 방법을 고를 때마다 새로 뽑음).
+  보여줄 개수는 `js/equipment.js` 의 `CASTING_REEL_PICK`.
+- `nameEn` 처럼 뒤에 `En` 이 붙은 값은 해외(영어) 접속 시 보이는 문구입니다. 비워두면 한국어가 그대로 보입니다.
 
 ### 5-3. 상품 삭제 / 주소 변경
 - 삭제: 해당 블록 `{ ... },` 전체를 지웁니다.
@@ -277,3 +282,12 @@ SHARK_DATA.defaultGradeChance = { NORMAL: 65, GOOD: 22, BIG: 9, TROPHY: 3, MONST
 | `sharkSound` | 사운드 ON/OFF |
 
 메인 메뉴의 **🗑 기록 초기화** 로 낚시 기록만 지울 수 있습니다.
+
+---
+
+## 한국어 / 영어 (해외 접속)
+
+- **대한민국에서 접속하면 한국어**, **그 외 국가에서 접속하면 영어**로 자동 표시됩니다.
+- 접속 국가는 무료 IP 위치 API(`get.geojs.io`, 실패 시 `api.country.is`)로 확인합니다. 확인 전에는 시간대/브라우저 언어로 먼저 추측합니다.
+- 상단 **KO / EN** 버튼으로 직접 바꿀 수 있고, 직접 고른 언어는 계속 유지됩니다.
+- 문구 추가 방법: 코드에서는 `L("한국어", "English")`, 데이터에서는 `nameEn` / `descriptionEn` 처럼 `En` 필드, HTML에서는 `data-en="English"` 속성 (`js/i18n.js` 참고).

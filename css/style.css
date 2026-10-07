@@ -68,6 +68,7 @@ a { color: inherit; }
 .nav-link:hover { background: rgba(79, 209, 255, 0.14); border-color: var(--sea-light); }
 .nav-yt { background: #c4161c; border-color: #c4161c; }
 .nav-yt:hover { background: #e0262c; border-color: #e0262c; }
+.nav-lang { color: inherit; font-family: inherit; cursor: pointer; }
 
 .app { padding-top: var(--header-h); min-height: calc(100vh - 40px); }
 

@@ -222,7 +222,7 @@ const U = {
         const svg = U.gearSVG(item);
         if (!item.image) return `<div class="gear-img">${svg}</div>`;
         const fallback = encodeURIComponent(svg);
-        return `<div class="gear-img"><img src="${U.escape(item.image)}" alt="${U.escape(item.name)}" loading="lazy"
+        return `<div class="gear-img"><img src="${U.escape(item.image)}" alt="${U.escape(I18N.name(item))}" loading="lazy"
             onerror="this.parentNode.innerHTML=decodeURIComponent('${fallback}')"></div>`;
     }
 };

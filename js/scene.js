@@ -319,7 +319,7 @@ const Scene = {
             c.fillStyle = "rgba(255,255,255,0.95)";
             c.font = "bold 12px sans-serif";
             c.textAlign = "center";
-            c.fillText("나부라!", x, sy - 34);
+            c.fillText(L("나부라!", "BOILING!"), x, sy - 34);
             c.textAlign = "start";
             c.restore();
         });

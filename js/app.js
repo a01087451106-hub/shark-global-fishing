@@ -10,6 +10,7 @@ const App = {
 
     init() {
         Sound.init();
+        I18N.applyStatic();
         this.applyLinks();
         this.initTitle();
         this.initMenu();
@@ -25,7 +26,25 @@ const App = {
             if (this.isStarted()) this.go("menu"); else this.show("title");
         });
         document.addEventListener("pointerdown", () => Sound.unlock(), { once: true });
+        U.$("#btn-lang").addEventListener("click", () => { Sound.click(); I18N.toggle(); });
+        I18N.onChange(() => this.relocalize());
+        I18N.detectCountry();
         this.show("title");
+    },
+
+    /* 언어가 바뀌면 지금 보고 있는 화면을 다시 그림 */
+    relocalize() {
+        this.updateSoundBtn();
+        if (this.refreshTitle) this.refreshTitle();
+        switch (this.current) {
+            case "menu": this.renderMenu(); break;
+            case "map": this.openMap(); break;
+            case "fish": this.openFish(); break;
+            case "method": this.openMethod(); break;
+            case "gear": this.renderGear(); break;
+            case "best": case "dex": case "equipment": this.go(this.current); break;
+            case "fishing": Fishing.hudInfo(); Fishing.updateDepthMeter(); break;
+        }
     },
 
     /* config.js 의 주소를 data-link 가 있는 모든 링크에 적용 */
@@ -74,8 +93,9 @@ const App = {
             const visited = Store.isYoutubeVisited();
             start.disabled = !visited;
             U.$("#yt-status").innerHTML = visited
-                ? `<span class="ok">✓ YouTube 채널 방문 완료</span>`
-                : `YouTube 채널을 방문하면 GAME START 버튼이 열려요.<br>채널에서 <b>구독</b> 버튼을 눌러주세요!`;
+                ? `<span class="ok">${L("✓ YouTube 채널 방문 완료", "✓ YouTube channel visited")}</span>`
+                : L(`YouTube 채널을 방문하면 GAME START 버튼이 열려요.<br>채널에서 <b>구독</b> 버튼을 눌러주세요!`,
+                    `Visit the YouTube channel to unlock GAME START.<br>Please hit <b>Subscribe</b> on the channel!`);
             start.classList.toggle("ready", visited);
         };
         yt.addEventListener("click", () => {
@@ -91,6 +111,7 @@ const App = {
             this.started = true;
             this.go("menu");
         });
+        this.refreshTitle = refresh;
         refresh();
     },
 
@@ -108,7 +129,7 @@ const App = {
     },
 
     updateSoundBtn() {
-        U.$("#btn-sound").textContent = Sound.enabled ? "🔊 사운드 ON" : "🔇 사운드 OFF";
+        U.$("#btn-sound").textContent = Sound.enabled ? L("🔊 사운드 ON", "🔊 Sound ON") : L("🔇 사운드 OFF", "🔇 Sound OFF");
     },
 
     renderMenu() {
@@ -117,13 +138,14 @@ const App = {
         const m = Game.month();
         const tunaOn = Game.D().koreaTunaSeason.months.includes(m);
         const notes = [];
-        notes.push(`<span>📅 ${m}월</span>`);
+        const tunaMonths = I18N.months(Game.D().koreaTunaSeason.months, "·");
+        notes.push(`<span>📅 ${I18N.month(m)}</span>`);
         notes.push(tunaOn
-            ? `<span class="badge badge-tuna">TUNA SEASON</span> 대한민국 동해 · 남해 · 제주 참치 출현 확률 UP!`
-            : `<span>대한민국 SUMMER TUNA FIELD는 ${Game.D().koreaTunaSeason.months.join("·")}월 시즌</span>`);
+            ? `<span class="badge badge-tuna">TUNA SEASON</span> ${L("대한민국 동해 · 남해 · 제주 참치 출현 확률 UP!", "Tuna chance UP in Korea's East Sea · South Sea · Jeju!")}`
+            : `<span>${L(`대한민국 SUMMER TUNA FIELD는 ${tunaMonths} 시즌`, `Korea SUMMER TUNA FIELD season: ${tunaMonths}`)}</span>`);
         notes.push(total >= need
             ? `<span class="badge badge-exp">TUNA EXPEDITION OPEN</span>`
-            : `<span>🔒 TUNA EXPEDITION 오픈까지 ${need - total}마리</span>`);
+            : `<span>${L(`🔒 TUNA EXPEDITION 오픈까지 ${need - total}마리`, `🔒 TUNA EXPEDITION opens in ${need - total} more fish`)}</span>`);
         U.$("#menu-notes").innerHTML = notes.map(n => `<div>${n}</div>`).join("");
         U.$("#menu-total").textContent = total;
     },
@@ -131,11 +153,11 @@ const App = {
     confirmReset() {
         const box = this.openModal(`
             <div class="detail center">
-                <h3>기록 초기화</h3>
-                <p>모든 낚시 기록(최대어·도감)을 지울까요?<br>되돌릴 수 없어요.</p>
+                <h3>${L("기록 초기화", "Reset Records")}</h3>
+                <p>${L("모든 낚시 기록(최대어·도감)을 지울까요?<br>되돌릴 수 없어요.", "Delete all fishing records (best catches · fish guide)?<br>This cannot be undone.")}</p>
                 <div class="detail-actions">
-                    <button class="btn btn-danger" data-act="yes">기록 지우기</button>
-                    <button class="btn btn-ghost" data-act="no">취소</button>
+                    <button class="btn btn-danger" data-act="yes">${L("기록 지우기", "Delete Records")}</button>
+                    <button class="btn btn-ghost" data-act="no">${L("취소", "Cancel")}</button>
                 </div>
             </div>`);
         box.onclick = e => {
@@ -147,7 +169,7 @@ const App = {
     },
 
     openHelp() {
-        this.openModal(`
+        this.openModal(I18N.en ? this.helpEn() : `
             <div class="detail help">
                 <h3>게임 방법</h3>
                 <ol class="steps">
@@ -171,6 +193,31 @@ const App = {
             </div>`);
     },
 
+    helpEn() {
+        return `
+            <div class="detail help">
+                <h3>How to Play</h3>
+                <ol class="steps">
+                    <li><b>🌎 Choose a region</b> Pick a sea to fish on the world map.</li>
+                    <li><b>🐟 Choose a fish</b> Pick the fish you want to catch.</li>
+                    <li><b>🎯 CASTING / ⚓ JIGGING</b> Pick a fishing method.</li>
+                    <li><b>🎒 3 pieces of gear</b> Rod → Reel → Lure. Not sure? Use <b>⭐ Start with Recommended Gear</b>!</li>
+                </ol>
+                <h4>⚓ JIGGING</h4>
+                <p>Check the <b>TARGET DEPTH</b> on screen. Each <b>DROP</b> lowers the jig one step: 20 → 30 → 40 → 50 → 60m.
+                <b>REEL</b> raises it one step. When you reach the target depth you get <b>DEPTH MATCH!</b> → tap <b>JERK</b> to get a bite.</p>
+                <h4>🎯 CASTING</h4>
+                <p>Press <b>CAST</b> and the distance gauge starts moving. Hit <b>STOP!</b> on the green mark (the boiling fish).
+                Then tap <b>ACTION</b> in rhythm and wind with <b>REEL</b>.</p>
+                <h4>💪 Fighting</h4>
+                <p>When the fish rests, <b>hold REEL</b>. When <b>RUN!</b> appears, <b>let go</b> (protect the line).
+                If the tension bar stays red too long the line breaks; if you don't reel for too long the hook pulls out.</p>
+                <h4>⌨ PC Shortcuts</h4>
+                <p>Jigging: <b>Space/↓</b> DROP · <b>J</b> JERK · <b>R/↑</b> REEL<br>Casting: <b>Space</b> CAST · STOP · REEL (hold) · <b>J</b> ACTION<br>Fighting: hold <b>Space</b></p>
+                <p class="muted small">PE line · shock leader · hooks · split rings are set up automatically.</p>
+            </div>`;
+    },
+
     /* ---------------- 지역 선택 ---------------- */
     openMap() {
         this.show("map");
@@ -185,24 +232,24 @@ const App = {
     openFish() {
         const r = Game.state.region;
         if (!r) return this.openMap();
-        U.$("#fish-region").innerHTML = `${U.escape(r.country)} · <b>${U.escape(r.name)}</b> ${World.badges(r)}`;
+        U.$("#fish-region").innerHTML = `${U.escape(I18N.f(r, "country"))} · <b>${U.escape(I18N.name(r))}</b> ${World.badges(r)}`;
         const list = Game.regionFish(r);
         U.$("#fish-grid").innerHTML = list.map(f => {
             const best = Records.bestOf(f.id);
             const tunaField = f.isTuna && r.tunaSeason;
             let badge = "";
             if (tunaField && Game.isTunaSeason(r)) badge = `<span class="badge badge-tuna">TUNA SEASON</span>`;
-            else if (tunaField) badge = `<span class="badge badge-off">시즌 아님 · 출현 확률 낮음</span>`;
-            else if (Game.isFishInSeason(f)) badge = `<span class="badge badge-season">시즌</span>`;
+            else if (tunaField) badge = `<span class="badge badge-off">${L("시즌 아님 · 출현 확률 낮음", "Off season · low chance")}</span>`;
+            else if (Game.isFishInSeason(f)) badge = `<span class="badge badge-season">${L("시즌", "In season")}</span>`;
             const methods = Game.availableMethods(r, f);
             return `<div class="fish-card" data-id="${f.id}">
                 <div class="fish-pic">${U.fishSVG(f)}</div>
-                <div class="fc-name">${U.escape(f.name)}</div>
-                <div class="muted small">${U.escape(f.nameEn)}</div>
-                <div class="fc-badges">${badge}${r.trophyFish && r.trophyFish.includes(f.id) ? `<span class="badge badge-trophy">대물 포인트</span>` : ""}</div>
+                <div class="fc-name">${U.escape(I18N.name(f))}</div>
+                ${I18N.en ? "" : `<div class="muted small">${U.escape(f.nameEn)}</div>`}
+                <div class="fc-badges">${badge}${r.trophyFish && r.trophyFish.includes(f.id) ? `<span class="badge badge-trophy">${L("대물 포인트", "Trophy spot")}</span>` : ""}</div>
                 <div class="gear-methods">${methods.map(m => `<span class="chip chip-${m}">${U.methodLabel(m)}</span>`).join("")}</div>
-                <div class="fc-power">파워 ${U.stars(f.fightPower)}</div>
-                <div class="muted small">${best ? `내 최대어 ${best.length}cm · ${U.formatWeight(best.weight)}` : "아직 못 잡았어요"}</div>
+                <div class="fc-power">${L("파워", "Power")} ${U.stars(f.fightPower)}</div>
+                <div class="muted small">${best ? `${L("내 최대어", "My best")} ${best.length}cm · ${U.formatWeight(best.weight)}` : L("아직 못 잡았어요", "Not caught yet")}</div>
             </div>`;
         }).join("");
         U.$("#fish-grid").onclick = e => {
@@ -221,25 +268,26 @@ const App = {
         const { region, fish } = Game.state;
         if (!fish) return this.openFish();
         const avail = Game.availableMethods(region, fish);
-        U.$("#method-info").innerHTML = `${U.escape(region.name)} · <b>${U.escape(fish.name)}</b>`;
+        U.$("#method-info").innerHTML = `${U.escape(I18N.name(region))} · <b>${U.escape(I18N.name(fish))}</b>`;
         const card = (m, icon, title, desc) => {
             const on = avail.includes(m);
             return `<button class="method-card ${on ? "" : "disabled"} method-${m}" data-m="${m}" ${on ? "" : "disabled"}>
                 <span class="mc-icon">${icon}</span>
                 <span class="mc-title">${title}</span>
-                <span class="mc-desc">${on ? desc : "이 물고기는 이 방법으로 잡을 수 없어요"}</span>
-                ${on && fish.bestMethod === m ? `<span class="tag tag-rec">추천</span>` : ""}
+                <span class="mc-desc">${on ? desc : L("이 물고기는 이 방법으로 잡을 수 없어요", "This fish can't be caught with this method")}</span>
+                ${on && fish.bestMethod === m ? `<span class="tag tag-rec">${L("추천", "Best")}</span>` : ""}
             </button>`;
         };
         U.$("#method-grid").innerHTML =
-            card("casting", "🎯", "CASTING", "펜슬 루어를 멀리 던져 수면의 물고기를 노려요") +
-            card("jigging", "⚓", "JIGGING", "메탈지그를 바닥까지 내려 톡톡 쳐 올려요");
+            card("casting", "🎯", "CASTING", L("펜슬 루어를 멀리 던져 수면의 물고기를 노려요", "Cast a pencil lure far out to target fish at the surface")) +
+            card("jigging", "⚓", "JIGGING", L("메탈지그를 바닥까지 내려 톡톡 쳐 올려요", "Drop a metal jig deep and jerk it back up"));
         U.$("#method-grid").onclick = e => {
             const b = e.target.closest(".method-card");
             if (!b || b.disabled) return;
             Sound.click();
             Game.resetSelection("method");
             Game.state.method = b.dataset.m;
+            Equip.shuffleCastingReels();
             this.gearStep = "rod";
             this.openGear();
         };
@@ -256,11 +304,11 @@ const App = {
     renderGear() {
         const st = Game.state;
         const { fish, method } = st;
-        U.$("#gear-info").innerHTML = `${U.escape(st.region.name)} · <b>${U.escape(fish.name)}</b> · ${U.methodIcon(method)} ${U.methodLabel(method)}`;
-        const steps = [["rod", "1. 낚시대"], ["reel", "2. 릴"], ["lure", "3. 루어"]];
+        U.$("#gear-info").innerHTML = `${U.escape(I18N.name(st.region))} · <b>${U.escape(I18N.name(fish))}</b> · ${U.methodIcon(method)} ${U.methodLabel(method)}`;
+        const steps = [["rod", L("1. 낚시대", "1. Rod")], ["reel", L("2. 릴", "2. Reel")], ["lure", L("3. 루어", "3. Lure")]];
         U.$("#gear-steps").innerHTML = steps.map(([k, label]) => `
             <button class="step ${this.gearStep === k ? "active" : ""} ${st[k] ? "done" : ""}" data-step="${k}">
-                <span>${label}</span><small>${st[k] ? "✓ " + U.escape(st[k].name) : "선택하세요"}</small>
+                <span>${label}</span><small>${st[k] ? "✓ " + U.escape(I18N.name(st[k])) : L("선택하세요", "Choose")}</small>
             </button>`).join("");
         U.$("#gear-steps").onclick = e => {
             const b = e.target.closest("[data-step]");
@@ -278,32 +326,32 @@ const App = {
         }
         if (this.gearStep === "lure") items = Equip.luresFor(method, fish.id);
         const lureNote = this.gearStep === "lure"
-            ? `<p class="muted small center">${method === "casting" ? "🎯 CASTING: 펜슬 계열 루어만 표시됩니다" : "⚓ JIGGING: 메탈지그 계열 루어만 표시됩니다"} · 오늘 유난히 잘 먹히는 루어가 있을지도...?</p>` : "";
+            ? `<p class="muted small center">${method === "casting" ? L("🎯 CASTING: 펜슬 계열 루어만 표시됩니다", "🎯 CASTING: only pencil-type lures are shown") : L("⚓ JIGGING: 메탈지그 계열 루어만 표시됩니다", "⚓ JIGGING: only metal jig-type lures are shown")} · ${L("오늘 유난히 잘 먹히는 루어가 있을지도...?", "Maybe one lure is especially hot today...?")}</p>` : "";
         const reelNote = this.gearStep === "reel" && items.length === 1
-            ? `<div class="reel-solo"><span>현재 사용 릴: <b>${U.escape(items[0].name)}</b> ✓</span>
-                <button class="btn btn-primary btn-lg" id="btn-reel-next">다음 → 루어 선택</button></div>` : "";
+            ? `<div class="reel-solo"><span>${L("현재 사용 릴", "Current reel")}: <b>${U.escape(I18N.name(items[0]))}</b> ✓</span>
+                <button class="btn btn-primary btn-lg" id="btn-reel-next">${L("다음 → 루어 선택", "Next → Choose Lure")}</button></div>` : "";
         U.$("#gear-note").innerHTML = lureNote + reelNote;
         const nextBtn = U.$("#btn-reel-next");
         if (nextBtn) nextBtn.onclick = () => { Sound.click(); this.pickGear("reel", items[0]); };
         const grid = U.$("#gear-grid");
         grid.innerHTML = items.map(it => Equip.card(it, this.gearStep, {
             selectable: true, fishId: fish.id, selectedId: st[this.gearStep] && st[this.gearStep].id
-        })).join("") || `<div class="empty">선택할 수 있는 장비가 없어요. 데이터 파일을 확인하세요.</div>`;
+        })).join("") || `<div class="empty">${L("선택할 수 있는 장비가 없어요. 데이터 파일을 확인하세요.", "No gear available. Please check the data files.")}</div>`;
         Equip.bindList(grid, (kind, item) => this.pickGear(kind, item));
 
         const ready = st.rod && st.reel && st.lure;
         U.$("#btn-go-fishing").disabled = !ready;
         const warn = ready ? Equip.powerWarning(fish) : "";
         U.$("#gear-summary").innerHTML = ready
-            ? `<span class="ok">✓ 기본 채비 자동세팅 완료</span> <span class="muted small">(PE 라인 · 쇼크리더 · 훅 · 스플릿링)</span>${warn ? `<div class="warn small">⚠ ${warn}</div>` : ""}`
-            : `<span class="muted">낚시대 · 릴 · 루어를 모두 고르면 낚시를 시작할 수 있어요</span>`;
+            ? `<span class="ok">${L("✓ 기본 채비 자동세팅 완료", "✓ Basic rig set up automatically")}</span> <span class="muted small">${L("(PE 라인 · 쇼크리더 · 훅 · 스플릿링)", "(PE line · shock leader · hooks · split rings)")}</span>${warn ? `<div class="warn small">⚠ ${warn}</div>` : ""}`
+            : `<span class="muted">${L("낚시대 · 릴 · 루어를 모두 고르면 낚시를 시작할 수 있어요", "Choose a rod, reel and lure to start fishing")}</span>`;
     },
 
     pickGear(kind, item) {
         Game.state[kind] = item;
         const order = ["rod", "reel", "lure"];
         let next = order.find(k => !Game.state[k]);
-        if (kind === "rod" && !Game.state.lure) next = "reel";   // 낚시대 다음엔 릴(VJ3) 화면을 보여줌
+        if (kind === "rod" && !Game.state.lure) next = "reel";   // 낚시대 다음엔 릴 화면을 보여줌
         this.gearStep = next || kind;
         this.renderGear();
         if (!next) U.$("#btn-go-fishing").scrollIntoView({ behavior: "smooth", block: "center" });
@@ -330,7 +378,7 @@ const App = {
 
     /* ---------------- 장비 메뉴 (둘러보기) ---------------- */
     renderEquipment() {
-        const tabs = [["rod-jigging", "지깅 낚시대"], ["rod-casting", "파핑 낚시대"], ["reel", "릴"], ["lure-casting", "루어 · CASTING"], ["lure-jigging", "루어 · JIGGING"]];
+        const tabs = [["rod-jigging", L("지깅 낚시대", "Jigging Rods")], ["rod-casting", L("파핑 낚시대", "Popping Rods")], ["reel", L("릴", "Reels")], ["lure-casting", L("루어 · CASTING", "Lures · CASTING")], ["lure-jigging", L("루어 · JIGGING", "Lures · JIGGING")]];
         U.$("#equip-tabs").innerHTML = tabs.map(([k, l]) => `<button class="chip-btn ${this.equipTab === k ? "active" : ""}" data-tab="${k}">${l}</button>`).join("");
         U.$("#equip-tabs").onclick = e => {
             const b = e.target.closest("[data-tab]");
@@ -358,20 +406,20 @@ const App = {
                 ${isNew ? `<div class="new-record">🏆 NEW RECORD!</div>` : ""}
                 <div class="grade big ${Records.gradeClass(c.grade)}">${U.escape(c.gradeLabel)}</div>
                 <div class="fish-pic big ${gi >= 3 ? "glow" : ""}">${U.fishSVG(fish)}</div>
-                <h3>${U.escape(fish.name)} <small class="muted">${U.escape(fish.nameEn)}</small></h3>
+                <h3>${U.escape(I18N.name(fish))} ${I18N.en ? "" : `<small class="muted">${U.escape(fish.nameEn)}</small>`}</h3>
                 <div class="result-size"><b>${c.length}</b>cm <span>·</span> <b>${U.formatWeight(c.weight)}</b></div>
-                <div class="muted small">최대어 ${fish.sizeRange.max}cm</div>
+                <div class="muted small">${L("최대어", "Max size")} ${fish.sizeRange.max}cm</div>
                 <div class="result-meta">
-                    <div>📍 ${U.escape(c.country)} ${U.escape(c.regionName)}</div>
-                    <div>${U.methodIcon(c.method)} ${U.methodLabel(c.method)} · ${U.escape(c.lureName)}</div>
-                    <div class="muted small">${U.escape(c.rodName)} / ${U.escape(c.reelName)}</div>
+                    <div>📍 ${U.escape(Records.countryOf(c))} ${U.escape(Records.regionNameOf(c))}</div>
+                    <div>${U.methodIcon(c.method)} ${U.methodLabel(c.method)} · ${U.escape(Records.lureNameOf(c))}</div>
+                    <div class="muted small">${U.escape(Records.gearNameOf(c, "rod"))} / ${U.escape(Records.gearNameOf(c, "reel"))}</div>
                 </div>
-                <p class="ok small">✓ 기록 저장 완료</p>
+                <p class="ok small">${L("✓ 기록 저장 완료", "✓ Record saved")}</p>
                 <div class="detail-actions">
-                    <button class="btn btn-primary btn-lg" data-act="again">🎣 다시 낚시</button>
-                    <button class="btn btn-ghost" data-act="gear">🎒 장비 바꾸기</button>
-                    <button class="btn btn-ghost" data-act="map">🌎 지역 바꾸기</button>
-                    <button class="btn btn-ghost" data-act="best">🏆 나의 최대어</button>
+                    <button class="btn btn-primary btn-lg" data-act="again">${L("🎣 다시 낚시", "🎣 Fish Again")}</button>
+                    <button class="btn btn-ghost" data-act="gear">${L("🎒 장비 바꾸기", "🎒 Change Gear")}</button>
+                    <button class="btn btn-ghost" data-act="map">${L("🌎 지역 바꾸기", "🌎 Change Region")}</button>
+                    <button class="btn btn-ghost" data-act="best">${L("🏆 나의 최대어", "🏆 My Best Catches")}</button>
                 </div>
             </div>`, () => Fishing.newRound(false));
         this.bindResultButtons(box);
@@ -383,9 +431,9 @@ const App = {
                 <div class="fail-title">${U.escape(title)}</div>
                 <p>${U.escape(tip)}</p>
                 <div class="detail-actions">
-                    <button class="btn btn-primary btn-lg" data-act="again">💪 다시 도전</button>
-                    <button class="btn btn-ghost" data-act="gear">🎒 장비 바꾸기</button>
-                    <button class="btn btn-ghost" data-act="map">🌎 지역 바꾸기</button>
+                    <button class="btn btn-primary btn-lg" data-act="again">${L("💪 다시 도전", "💪 Try Again")}</button>
+                    <button class="btn btn-ghost" data-act="gear">${L("🎒 장비 바꾸기", "🎒 Change Gear")}</button>
+                    <button class="btn btn-ghost" data-act="map">${L("🌎 지역 바꾸기", "🌎 Change Region")}</button>
                 </div>
             </div>`, () => Fishing.newRound(false));
         this.bindResultButtons(box);
