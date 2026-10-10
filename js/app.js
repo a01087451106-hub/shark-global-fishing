@@ -37,7 +37,6 @@ const App = {
     relocalize() {
         this.updateSoundBtn();
         this.updateHapticBtn();
-        if (this.refreshTitle) this.refreshTitle();
         switch (this.current) {
             case "menu": this.renderMenu(); break;
             case "map": this.openMap(); break;
@@ -87,34 +86,14 @@ const App = {
         this.show(name);
     },
 
-    /* ---------------- 첫 화면 + YouTube ---------------- */
+    /* ---------------- 첫 화면 ---------------- */
     initTitle() {
-        const yt = U.$("#btn-youtube");
-        const start = U.$("#btn-start");
-        const refresh = () => {
-            const visited = Store.isYoutubeVisited();
-            start.disabled = !visited;
-            U.$("#yt-status").innerHTML = visited
-                ? `<span class="ok">${L("✓ YouTube 채널 방문 완료", "✓ YouTube channel visited")}</span>`
-                : L(`YouTube 채널을 방문하면 GAME START 버튼이 열려요.<br>채널에서 <b>구독</b> 버튼을 눌러주세요!`,
-                    `Visit the YouTube channel to unlock GAME START.<br>Please hit <b>Subscribe</b> on the channel!`);
-            start.classList.toggle("ready", visited);
-        };
-        yt.addEventListener("click", () => {
-            /* 정적 사이트는 실제 구독 여부를 확인할 수 없으므로 '방문 완료'만 기록 */
-            Store.setYoutubeVisited();
-            Sound.unlock();
-            setTimeout(refresh, 300);
-        });
-        start.addEventListener("click", () => {
-            if (start.disabled) return;
+        U.$("#btn-start").addEventListener("click", () => {
             Sound.unlock();
             Sound.landing();
             this.started = true;
             this.go("menu");
         });
-        this.refreshTitle = refresh;
-        refresh();
     },
 
     /* ---------------- 메인 메뉴 ---------------- */

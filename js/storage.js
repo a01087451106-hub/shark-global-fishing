@@ -4,7 +4,6 @@
    ========================================================= */
 const Store = {
     KEYS: {
-        YOUTUBE: "sharkYoutubeVisited",
         RECORDS: "sharkRecords",
         SOUND: "sharkSound",
         DIFFICULTY: "sharkDifficulty",
@@ -30,9 +29,6 @@ const Store = {
     remove(key) {
         try { localStorage.removeItem(key); } catch (e) { }
     },
-
-    isYoutubeVisited() { return Store.get(Store.KEYS.YOUTUBE, false) === true; },
-    setYoutubeVisited() { Store.set(Store.KEYS.YOUTUBE, true); },
 
     getRecords() {
         const r = Store.get(Store.KEYS.RECORDS, []);

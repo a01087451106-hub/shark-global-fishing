@@ -27,7 +27,7 @@ PC와 스마트폰에서 모두 플레이할 수 있는 바다낚시 정적 웹�
 ## 2. 게임 흐름
 
 ```
-YouTube 채널 방문 → GAME START
+GAME START (누구나 바로 시작)
 → 세계지도에서 지역 선택 → 잡을 물고기 선택 → CASTING / JIGGING 선택
 → 낚시대 → 릴 → 루어 (또는 ⭐ 추천 장비로 시작)
 → 낚시 → HIT → 파이팅 → 랜딩 → 기록 저장
@@ -102,7 +102,7 @@ const CONFIG = {
 };
 ```
 
-여기만 바꾸면 상단 메뉴, 첫 화면 YouTube 버튼, 장비의 "지깅몰" 기본 주소까지 모두 바뀝니다.
+여기만 바꾸면 상단 메뉴, 장비의 "지깅몰" 기본 주소까지 모두 바뀝니다.
 모든 외부 링크는 새 창(`target="_blank"`, `rel="noopener noreferrer"`)으로 열립니다.
 
 ---
@@ -267,20 +267,20 @@ SHARK_DATA.defaultGradeChance = { NORMAL: 65, GOOD: 22, BIG: 9, TROPHY: 3, MONST
 
 ---
 
-## 9. YouTube 버튼 안내
+## 9. YouTube
 
-- 첫 화면의 **▶ 샤크신동만 YouTube 구독하기** 버튼을 한 번 누르면 GAME START가 열립니다.
-- 정적 웹사이트는 실제 구독 여부를 확인할 수 없으므로 게임에는
-  **"YouTube 채널 방문 완료"** 라고만 표시합니다.
-- 방문 기록은 `localStorage`의 `sharkYoutubeVisited` 에 저장되어 다음부터는 바로 시작할 수 있습니다.
+- 첫 화면에 구독 버튼은 없고, 누구나 바로 GAME START 할 수 있습니다.
+- YouTube 채널 링크는 상단 메뉴의 **YouTube** 버튼에 있습니다.
 
 ## 10. 저장 데이터 (localStorage)
 
 | 키 | 내용 |
 |---|---|
-| `sharkYoutubeVisited` | YouTube 채널 방문 여부 |
 | `sharkRecords` | 낚시 기록 (최대어 / 도감) |
 | `sharkSound` | 사운드 ON/OFF |
+| `sharkDifficulty` | 난이도 (하 · 중 · 상) |
+| `sharkHaptic` | 손맛 진동 ON/OFF |
+| `sharkLang` / `sharkCountry` | 직접 고른 언어 / 접속 국가 |
 
 메인 메뉴의 **🗑 기록 초기화** 로 낚시 기록만 지울 수 있습니다.
 

@@ -119,11 +119,6 @@ body[data-screen="title"] .site-footer, body[data-screen="fishing"] .site-footer
 .btn-danger { background: var(--red); }
 .btn-locked { background: #2a3442; color: var(--muted); width: 100%; }
 
-.btn-youtube {
-    background: #e62117; font-size: 1.05rem; padding: 14px 26px; border-radius: 999px;
-    box-shadow: 0 8px 24px rgba(230, 33, 23, 0.4);
-}
-.btn-youtube:hover { filter: brightness(1.1); }
 
 .btn-start {
     background: linear-gradient(180deg, #ffd34d, #f29d0c); color: #1a1000;
@@ -200,7 +195,6 @@ body[data-screen="title"] .site-footer, body[data-screen="fishing"] .site-footer
 }
 .title-sub { color: #9fc3e6; letter-spacing: 0.18em; font-size: 0.82rem; font-weight: 700; }
 .title-copy { font-size: 1.2rem; font-weight: 800; margin: 6px 0 10px; }
-.yt-status { font-size: 0.9rem; color: #c9d8e8; min-height: 2.6em; }
 
 /* ---------------- 메뉴 ---------------- */
 .menu-head { display: flex; align-items: baseline; justify-content: space-between; }
