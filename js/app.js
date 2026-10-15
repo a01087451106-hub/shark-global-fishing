@@ -210,6 +210,8 @@ const App = {
                 모은 골드로 <b>🎒 장비</b> 메뉴에서 더 강한 낚시대 · 릴을 사세요. (게임 전용 골드 · 실제 돈과 무관)</p>
                 <h4>🎖 업적 · 칭호 / 📸 인증샷</h4>
                 <p>"첫 참치", "30kg 클럽" 같은 업적을 달성하면 보너스 골드와 <b>칭호</b>를 얻어요. 큰 고기를 잡으면 <b>📸 인증샷 카드</b>를 만들어 카톡 · 인스타로 자랑해보세요!</p>
+                <h4>📡 오늘의 바다 (실시간)</h4>
+                <p>지역을 고르면 그곳의 <b>지금 실제 날씨 · 바람 · 파고 · 수온 · 물때 · 현지 시각</b>이 나오고 입질에 반영돼요. 사리 무렵 · 아침저녁 피딩타임 · 비 오는 날은 입질 UP, 강풍 · 한밤중 · 조금은 DOWN.</p>
                 <h4>🎚 난이도 하 · 중 · 상</h4>
                 <p>메인 메뉴에서 고를 수 있어요. <b>상</b>은 텐션이 금방 차오르고, 물고기가 더 오래 버티고, 입질도 적지만 <b>대물 확률이 올라가요</b>.</p>
                 <h4>📳 손맛</h4>
@@ -245,6 +247,8 @@ const App = {
                 Spend gold on stronger rods and reels in the <b>🎒 Gear</b> menu. (Game-only gold · not real money)</p>
                 <h4>🎖 Achievements · Titles / 📸 Trophy Card</h4>
                 <p>Unlock achievements like "First Tuna" or "30kg Club" for bonus gold and a <b>title</b>. Land a big one and make a <b>📸 Trophy Card</b> to share!</p>
+                <h4>📡 Today's Sea (live)</h4>
+                <p>Each region shows its <b>real weather, wind, waves, water temperature, tide and local time</b>, and they affect bites. Spring tides, dawn/dusk and rain help; strong wind, late night and neap tides hurt.</p>
                 <h4>🎚 Difficulty EASY · NORMAL · HARD</h4>
                 <p>Choose it in the main menu. On <b>HARD</b> tension builds fast, fish fight longer and bite less, but <b>trophy chances go up</b>.</p>
                 <h4>📳 Feel the fight</h4>
@@ -279,6 +283,7 @@ const App = {
         const r = Game.state.region;
         if (!r) return this.openMap();
         U.$("#fish-region").innerHTML = `${U.escape(I18N.f(r, "country"))} · <b>${U.escape(I18N.name(r))}</b> ${World.badges(r)}`;
+        this.renderSea("#fish-sea", r, null);
         const list = Game.regionFish(r);
         U.$("#fish-grid").innerHTML = list.map(f => {
             const best = Records.bestOf(f.id);
@@ -307,6 +312,14 @@ const App = {
             this.openMethod();
         };
         this.show("fish");
+    },
+
+    /* 📡 오늘의 바다 (실시간 날씨 · 물때) - 먼저 물때만 보여주고, 날씨를 받아오면 다시 그림 */
+    renderSea(sel, region, fish) {
+        const el = U.$(sel);
+        if (!el) return;
+        el.innerHTML = Weather.cardHTML(region, fish);
+        if (!Weather.get(region)) Weather.load(region).then(d => { if (d && U.$(sel) === el) el.innerHTML = Weather.cardHTML(region, fish); });
     },
 
     /* ---------------- 낚시 방법 ---------------- */
@@ -350,6 +363,7 @@ const App = {
     renderGear() {
         const st = Game.state;
         const { fish, method } = st;
+        this.renderSea("#gear-sea", st.region, fish);
         U.$("#gear-info").innerHTML = `${U.escape(I18N.name(st.region))} · <b>${U.escape(I18N.name(fish))}</b> · ${U.methodIcon(method)} ${U.methodLabel(method)} · <span class="badge badge-diff diff-${Game.difficultyId()}">${L("난이도", "Level")} ${Game.difficultyLabel()}</span> · <span class="gold-txt">💰 ${Shop.fmt(Shop.gold())}</span>`;
         const steps = [["rod", L("1. 낚시대", "1. Rod")], ["reel", L("2. 릴", "2. Reel")], ["lure", L("3. 루어", "3. Lure")]];
         U.$("#gear-steps").innerHTML = steps.map(([k, label]) => `

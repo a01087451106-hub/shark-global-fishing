@@ -89,6 +89,7 @@ const Game = {
         }
         if (fish.bestMethod === method) f *= 1.1;
         f *= this.difficulty().hitRate;                                                // 난이도
+        f *= Weather.hitMult();                                                        // 실시간 날씨 · 물때 · 시간
         return f;
     },
 
@@ -111,6 +112,7 @@ const Game = {
         m *= this.gearPower() >= fish.recommendedPower ? 1.1 : 0.85;                   // 장비 궁합
         m *= 0.85 + 0.4 * U.clamp(ctx.playScore || 0, 0, 1);                           // 플레이 타이밍(액션)
         m *= this.difficulty().luck;                                                   // 난이도 (상일수록 대물 UP)
+        m *= Weather.luckMult();                                                       // 실시간 날씨 · 물때
         return U.clamp(m, 0.4, 6);
     },
 

@@ -72,6 +72,8 @@ const Fishing = {
         U.$("#hud-fish").textContent = I18N.name(fish);
         U.$("#hud-method").textContent = U.methodIcon(method) + " " + U.methodLabel(method);
         U.$("#hud-lure").textContent = I18N.name(lure);
+        const sea = Weather.pills(region).slice(0, 5).join("  ");                 // 실시간 날씨 · 물때
+        U.$("#hud-sea").textContent = sea;
         let badge = "";
         if (fish.isTuna && Game.isTunaSeason(region)) badge = `<span class="badge badge-tuna">TUNA SEASON</span>`;
         else if (Game.isFishInSeason(fish)) badge = `<span class="badge badge-season">${L("시즌", "In season")}</span>`;

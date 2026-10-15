@@ -10,6 +10,14 @@ window.SHARK_DATA = window.SHARK_DATA || {};
 
 SHARK_DATA.news = [
     {
+        id: 9, date: "2026.10.15",
+        items: [
+            ["📡", "실시간 바다 날씨", "지역마다 지금 실제 날씨 · 바람 · 파고 · 수온이 입질에 반영돼요. 비 오는 날은 입질 활발, 풍랑엔 입질 ↓ 대물 ↑!", "Live sea weather", "Real weather, wind, waves and water temperature now affect bites in every region."],
+            ["🌙", "물때 반영", "한국 물때표(서해 7물때식 · 동해 · 남해 8물때식)대로 계산해요. 물이 잘 가는 사리 무렵엔 입질 UP, 조금엔 DOWN.", "Real tides", "Tides follow the moon. Spring tides boost bites, neap tides slow them down."],
+            ["🌅", "피딩타임", "현지 시각 해 뜰 무렵 · 해 질 무렵엔 입질이 확 살아나요!", "Feeding time", "Bites pick up at local dawn and dusk!"]
+        ]
+    },
+    {
         id: 8, date: "2026.10.15",
         items: [
             ["📳", "손맛 진동 강화", "안드로이드 폰에서 진동이 항상 켜지고, 더 또렷하게 느껴지도록 바꿨어요. (아이폰은 웹 진동 미지원)", "Stronger vibration", "Vibration is now always on and stronger on Android phones. (Not supported on iPhone)"]
