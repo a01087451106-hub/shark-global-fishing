@@ -39,22 +39,30 @@ const CONFIG = {
        - finalPower : 배 근처 마지막 저항의 힘
        - hitRate    : 입질 확률 배율
        - gaugeSpeed : 캐스팅 거리 게이지 속도 배율
-       - luck       : 대물 확률 배율 (어려울수록 보상) */
+       - luck       : 대물 확률 배율 (어려울수록 보상)
+       - lockBase   : RUN(질주) 중에 감으면 올라가는 텐션 → 높을수록 라인이 빨리 터짐
+       - shockPeak  : 헤드쉐이크 중에 감을 때 "툭!" 하고 튀는 텐션
+       - shock      : 헤드쉐이크 중에 감으면 라인이 손상되는 배율 → 높을수록 잘 터짐
+       - react      : "손 떼!" 신호 뒤 봐주는 반응 시간(초) → 짧을수록 어려움
+       - surge      : 감고 있는데 물고기가 갑자기 차고 나가면 텐션이 확 튀는 양 */
     DIFFICULTY: {
         easy: {
             label: "하", labelEn: "EASY", desc: "입문 · 넉넉한 텐션", descEn: "Beginner · forgiving tension",
             gearBase: 2.9, runOut: 1.0, reelSpeed: 1.55, drainRest: 3.6, drainRun: 4.0, recover: 1.8, breakGrace: 0.7,
-            tension: 0.88, slackLimit: 3.6, finalPower: 1.0, hitRate: 1.35, gaugeSpeed: 0.8, luck: 0.9
+            tension: 0.88, slackLimit: 3.6, finalPower: 1.0, hitRate: 1.35, gaugeSpeed: 0.8, luck: 0.9,
+            lockBase: 62, shockPeak: 85, shock: 3.6, react: 0.36, surge: 8
         },
         normal: {
             label: "중", labelEn: "NORMAL", desc: "기본 밸런스", descEn: "Standard balance",
             gearBase: 2.4, runOut: 1.25, reelSpeed: 1.3, drainRest: 2.9, drainRun: 3.3, recover: 2.5, breakGrace: 0.3,
-            tension: 1.0, slackLimit: 2.6, finalPower: 1.2, hitRate: 1.0, gaugeSpeed: 1.0, luck: 1.0
+            tension: 1.0, slackLimit: 2.6, finalPower: 1.2, hitRate: 1.0, gaugeSpeed: 1.0, luck: 1.0,
+            lockBase: 70, shockPeak: 95, shock: 3.0, react: 0.31, surge: 14
         },
         hard: {
             label: "상", labelEn: "HARD", desc: "고수용 · 대물 확률 UP", descEn: "Expert · more trophy fish",
             gearBase: 2.15, runOut: 1.4, reelSpeed: 1.15, drainRest: 2.5, drainRun: 2.9, recover: 3.0, breakGrace: 0.2,
-            tension: 1.07, slackLimit: 2.0, finalPower: 1.4, hitRate: 0.75, gaugeSpeed: 1.4, luck: 1.35
+            tension: 1.07, slackLimit: 2.0, finalPower: 1.4, hitRate: 0.75, gaugeSpeed: 1.4, luck: 1.35,
+            lockBase: 72, shockPeak: 105, shock: 3.4, react: 0.3, surge: 14
         }
     },
     DEFAULT_DIFFICULTY: "normal",

@@ -23,7 +23,12 @@ const Battle = {
         drainRest: 2.9,       // 감을 때 물고기 체력 감소
         drainRun: 3.3,        // 질주할 때 물고기 체력 감소
         recover: 2.5,         // 안 감고 쉬면 물고기 체력 회복
-        breakGrace: 0.3       // 텐션 100% 이상 버틸 수 있는 기본 시간(초)
+        breakGrace: 0.3,      // 텐션 100% 이상 버틸 수 있는 기본 시간(초)
+        lockBase: 70,         // RUN 중에 감으면 올라가는 텐션 (드랙을 잠근 것처럼)
+        shockPeak: 95,        // 헤드쉐이크 중에 감으면 "툭!" 할 때 튀는 텐션
+        shock: 2.0,           // 헤드쉐이크 충격이 라인에 주는 손상 배율
+        react: 0.4,           // 손 떼라는 신호 뒤 봐주는 반응 시간(초)
+        surge: 20             // 감고 있는데 물고기가 갑자기 차고 나가면 텐션이 확 튀는 양
     },
 
     start(catchObj, distance) {
@@ -115,13 +120,21 @@ const Battle = {
         const ratio = pull / s.gearEff;
         s.ratio = ratio;                        // 손맛(진동) 세기에 사용
 
+        /* 감고 있는데 물고기가 갑자기 차고 나가거나 머리를 흔들기 시작하면 → 텐션이 확 튐 */
+        if (s.mode !== s.lastMode) {
+            if (reeling && (running || shaking)) s.tension += T.surge * U.clamp(ratio, 0.6, 1.5);
+            s.lastMode = s.mode;
+        }
+
         /* 목표 텐션 */
         let target;
-        if (reeling) target = (30 + 42 * ratio) * T.tension;
+        if (reeling && running) target = (T.lockBase + 40 * ratio) * T.tension;                     // 질주를 감아서 버팀 → 위험
+        else if (reeling && shaking) target = (30 + T.shockPeak * s.shakePulse) * T.tension;        // 머리 흔들 때 감음 → 툭툭 충격
+        else if (reeling) target = (30 + 42 * ratio) * T.tension;
         else if (running) target = (14 + 58 * (1 - Math.exp(-ratio / 1.4))) * T.tension;   // 손을 떼면 드랙이 미끄러지며 라인 보호
         else if (shaking) target = 12 + 26 * s.shakePulse;
         else target = 3 + 6 * ratio;
-        s.tension += (target - s.tension) * Math.min(1, dt * 5) + U.rand(-1.5, 1.5);
+        s.tension += (target - s.tension) * Math.min(1, dt * (reeling && shaking ? 14 : 5)) + U.rand(-1.5, 1.5);
         s.tension = U.clamp(s.tension, 0, 135);
 
         /* 거리 / 체력 */
@@ -152,7 +165,12 @@ const Battle = {
         if (reeling && !running) Sound.reel();
 
         /* 실패 조건 */
-        if (s.tension >= 100) s.breakT += dt; else s.breakT = Math.max(0, s.breakT - dt * 1.5);
+        /* 텐션 100% 이상이면 라인 손상 누적. 헤드쉐이크 충격은 더 크게, 계속 감고 버티면 회복도 느림 */
+        if (s.tension >= 100) s.breakT += dt;
+        /* RUN · 헤드쉐이크인데 계속 감고 있는 시간 (반응이 늦은 정도는 react 초까지 봐줌) */
+        s.holdT = reeling && s.mode !== "rest" ? (s.holdT || 0) + dt : 0;
+        if (reeling && shaking && s.holdT > T.react) s.breakT += dt * T.shock * s.shakePulse * U.clamp(ratio, 0.5, 1.6);   // 헤드쉐이크 "툭!"마다 라인 손상
+        else s.breakT = Math.max(0, s.breakT - dt * (reeling && s.mode !== "rest" ? 0.25 : 1.5));
         if (s.breakT > T.breakGrace + s.control * 0.08) return "break";
 
         if (s.tension < 9 && s.mode === "rest") s.slackT += dt; else s.slackT = Math.max(0, s.slackT - dt * 2);

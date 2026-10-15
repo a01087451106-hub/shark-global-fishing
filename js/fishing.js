@@ -484,7 +484,7 @@ const Fishing = {
         Sound.fail();
         Haptic.fail(reason);
         const info = {
-            break: [L("라인 브레이크!", "LINE BREAK!"), L("물고기가 달릴 때(RUN!)는 손을 떼서 드랙이 풀리게 하세요. 텐션 바가 빨간색이 되면 위험!", "When the fish runs (RUN!), let go so the drag can slip. A red tension bar means danger!")],
+            break: [L("라인 브레이크!", "LINE BREAK!"), L("물고기가 달릴 때(RUN!)나 머리를 흔들 때(헤드쉐이크)는 바로 손을 떼세요. 계속 감으면 라인이 터져요! 난이도가 높을수록 더 빨리 떼야 해요.", "When the fish runs (RUN!) or shakes its head, let go right away. Keep reeling and the line snaps! The higher the difficulty, the faster you must react.")],
             hookout: [L("바늘이 빠졌어요 (바레)", "The hook pulled out!"), L("물고기가 쉴 때는 REEL을 계속 누르고 있어야 라인이 느슨해지지 않아요.", "Keep holding REEL while the fish rests so the line doesn't go slack.")],
             lineout: [L("라인이 모두 풀렸어요!", "Spooled! All the line is gone!"), L("더 강한 릴(POWER ★)을 쓰거나, 물고기가 쉴 때 부지런히 감아주세요.", "Use a stronger reel (POWER ★), or reel hard whenever the fish rests.")]
         }[reason];

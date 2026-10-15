@@ -225,7 +225,7 @@ const App = {
                 <p><b>CAST</b>를 누르면 거리 게이지가 움직여요. 초록 표시(보일링 위치)에 왔을 때 <b>STOP!</b>
                 그다음 <b>ACTION</b>을 리듬있게 누르며 <b>REEL</b>로 감으세요.</p>
                 <h4>💪 파이팅</h4>
-                <p>물고기가 쉴 때는 <b>REEL을 누르고 있기</b>. 화면에 <b>RUN!</b>이 나오면 <b>손을 떼세요</b> (라인 보호).
+                <p>물고기가 쉴 때는 <b>REEL을 누르고 있기</b>. 화면에 <b>RUN!</b>이나 <b>헤드쉐이크</b>가 나오면 <b>바로 손을 떼세요</b>. 계속 감으면 라인이 터져요! 난이도가 높을수록 더 빨리 반응해야 해요.
                 텐션 바가 빨간색이 오래 가면 라인이 끊어지고, 너무 오래 안 감으면 바늘이 빠져요.</p>
                 <h4>⌨ PC 단축키</h4>
                 <p>지깅: <b>Space/↓</b> DROP · <b>J</b> JERK · <b>R/↑</b> REEL<br>캐스팅: <b>Space</b> CAST · STOP · REEL(누르고 있기) · <b>J</b> ACTION<br>파이팅: <b>Space</b> 누르고 있기</p>
@@ -260,7 +260,7 @@ const App = {
                 <p>Press <b>CAST</b> and the distance gauge starts moving. Hit <b>STOP!</b> on the green mark (the boiling fish).
                 Then tap <b>ACTION</b> in rhythm and wind with <b>REEL</b>.</p>
                 <h4>💪 Fighting</h4>
-                <p>When the fish rests, <b>hold REEL</b>. When <b>RUN!</b> appears, <b>let go</b> (protect the line).
+                <p>When the fish rests, <b>hold REEL</b>. When <b>RUN!</b> or a <b>head shake</b> appears, <b>let go right away</b> or the line will snap. Higher difficulty means less time to react.
                 If the tension bar stays red too long the line breaks; if you don't reel for too long the hook pulls out.</p>
                 <h4>⌨ PC Shortcuts</h4>
                 <p>Jigging: <b>Space/↓</b> DROP · <b>J</b> JERK · <b>R/↑</b> REEL<br>Casting: <b>Space</b> CAST · STOP · REEL (hold) · <b>J</b> ACTION<br>Fighting: hold <b>Space</b></p>
