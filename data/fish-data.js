@@ -65,7 +65,7 @@ SHARK_DATA.fish = [
         depthPref: [5, 50], seasons: [9, 10, 11, 12],
         sizeRange: { min: 60, max: 130 }, weightK: 7e-6,
         fightPower: 2.2, recommendedPower: 2,
-        description: "빠른 스피드와 날카로운 이빨. 가을 수면 나부라에 펜슬을 던지면 폭발적인 입질!", descriptionEn: "Blazing speed and razor teeth. Throw a pencil into autumn surface boils for explosive strikes!"
+        description: "빠른 스피드와 날카로운 이빨. 가을 수면 보일링에 펜슬을 던지면 폭발적인 입질!", descriptionEn: "Blazing speed and razor teeth. Throw a pencil into autumn surface boils for explosive strikes!"
     },
     {
         id: "tuna", name: "참치", nameEn: "Pacific Bluefin Tuna",

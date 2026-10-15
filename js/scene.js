@@ -292,7 +292,7 @@ const Scene = {
         }
     },
 
-    /* ---------------- 캐스팅: 나부라 (물고기 떼가 수면을 깨는 장면) ---------------- */
+    /* ---------------- 캐스팅: 보일링 (물고기 떼가 수면을 깨는 장면) ---------------- */
     drawBoils(F) {
         const c = F.ctx, sy = F.surfaceY, fish = Game.state.fish;
         F.boils.forEach((b, bi) => {
@@ -319,7 +319,7 @@ const Scene = {
             c.fillStyle = "rgba(255,255,255,0.95)";
             c.font = "bold 12px sans-serif";
             c.textAlign = "center";
-            c.fillText(L("나부라!", "BOILING!"), x, sy - 34);
+            c.fillText(L("보일링!", "BOILING!"), x, sy - 34);
             c.textAlign = "start";
             c.restore();
         });

@@ -93,7 +93,7 @@ SHARK_DATA.regions = [
         difficulty: 2, depthMin: 15, depthMax: 70,
         mainFish: ["amberjack", "squid", "spanish_mackerel"], trophyFish: ["spanish_mackerel"],
         fishingTypes: ["jigging", "casting"], unlocked: true,
-        description: "남해 서부의 대삼치 명소. 가을 나부라를 노려라.", descriptionEn: "The Spanish mackerel hotspot of the western South Sea. Target the autumn boils."
+        description: "남해 서부의 대삼치 명소. 가을 보일링를 노려라.", descriptionEn: "The Spanish mackerel hotspot of the western South Sea. Target the autumn boils."
     },
     {
         id: "donghae", country: "대한민국", countryEn: "South Korea", name: "동해", nameEn: "East Sea",
@@ -111,7 +111,7 @@ SHARK_DATA.regions = [
         mainFish: ["amberjack", "spanish_mackerel", "tuna", "squid"], trophyFish: ["tuna"],
         fishingTypes: ["jigging", "casting"], unlocked: true,
         tunaSeason: SHARK_DATA.koreaTunaSeason,
-        description: "따뜻한 쿠로시오 지류. 여름 참치 나부라가 터지는 SUMMER TUNA FIELD.", descriptionEn: "A warm Kuroshio branch current. A SUMMER TUNA FIELD where summer tuna boils erupt."
+        description: "따뜻한 쿠로시오 지류. 여름 참치 보일링가 터지는 SUMMER TUNA FIELD.", descriptionEn: "A warm Kuroshio branch current. A SUMMER TUNA FIELD where summer tuna boils erupt."
     },
     {
         id: "seohae", country: "대한민국", countryEn: "South Korea", name: "서해", nameEn: "West Sea",

@@ -120,7 +120,7 @@ const Fishing = {
             this.msg(L(`목표수심 ${this.target}m · ⬇ 지그 내리기`, `Target depth ${this.target}m · ⬇ Drop the jig`));
         } else {
             this.setControls([{ id: "cast", label: "🎯 CAST", sub: L("던지기", "Throw"), cls: "btn-primary", key: "Space" }]);
-            this.msg(first ? L("물고기가 뛰는 '나부라'(물보라)를 찾아 CAST!", "Find the boiling fish (surface splashes) and CAST!") : L("다시 CAST! 나부라 근처로 던지세요.", "CAST again! Throw near the boiling fish."));
+            this.msg(first ? L("물고기가 뛰는 '보일링'(물보라)를 찾아 CAST!", "Find the boiling fish (surface splashes) and CAST!") : L("다시 CAST! 보일링 근처로 던지세요.", "CAST again! Throw near the boiling fish."));
         }
         this.updateDepthMeter();
         U.$("#fight-hud").classList.remove("show");
@@ -284,7 +284,7 @@ const Fishing = {
         this.gaugeT = 0;
         U.$("#cast-gauge").classList.add("show");
         this.setControls([{ id: "release", label: "🎯 STOP!", sub: L("지금 던지기", "Throw now"), cls: "btn-primary", key: "Space" }]);
-        this.msg(L("게이지가 원하는 거리에 왔을 때 STOP! (초록 표시 = 나부라 위치)", "STOP! when the gauge reaches your distance (green mark = boiling fish)"));
+        this.msg(L("게이지가 원하는 거리에 왔을 때 STOP! (초록 표시 = 보일링 위치)", "STOP! when the gauge reaches your distance (green mark = boiling fish)"));
     },
 
     releaseCast() {
@@ -308,7 +308,7 @@ const Fishing = {
         const near = this.nearestBoil();
         const d = near ? Math.abs(near.dist - this.dist) : 99;
         this.castScore = U.clamp(1 - d / 30, 0, 1);
-        if (d < 8) this.toast(L("NICE CAST! 나부라 정면!", "NICE CAST! Right on the boil!"), "good");
+        if (d < 8) this.toast(L("NICE CAST! 보일링 정면!", "NICE CAST! Right on the boil!"), "good");
         else if (d < 18) this.toast("GOOD CAST!", "good");
         this.workControls();
         this.msg(L("ACTION으로 펜슬을 움직이고, REEL로 감으세요!", "Work the pencil with ACTION and wind with REEL!"));
@@ -517,7 +517,7 @@ const Fishing = {
         this.kick = Math.max(0, this.kick - dt * 4);
         this.dive = Math.max(0, this.dive - dt * 3);
 
-        /* 나부라 (캐스팅) */
+        /* 보일링 (캐스팅) */
         if (this.method === "casting") {
             this.boils.forEach(b => { b.age += dt; });
             this.boils = this.boils.filter(b => b.age < b.life);
