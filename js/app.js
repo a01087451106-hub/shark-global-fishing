@@ -19,6 +19,7 @@ const App = {
         this.initMenu();
         this.initModal();
         Fishing.init();
+        Online.init();
 
         U.$$("[data-go]").forEach(b => b.addEventListener("click", () => {
             Sound.click();
@@ -45,7 +46,7 @@ const App = {
             case "fish": this.openFish(); break;
             case "method": this.openMethod(); break;
             case "gear": this.renderGear(); break;
-            case "best": case "dex": case "equipment": case "achieve": this.go(this.current); break;
+            case "best": case "dex": case "equipment": case "achieve": case "rank": this.go(this.current); break;
             case "fishing": Fishing.hudInfo(); Fishing.updateDepthMeter(); break;
         }
     },
@@ -82,6 +83,7 @@ const App = {
             case "dex": Records.renderDex(U.$("#dex-body")); break;
             case "equipment": this.renderEquipment(); break;
             case "achieve": Achieve.render(U.$("#achieve-body")); break;
+            case "rank": Online.renderRank(U.$("#rank-body")); break;
             case "fish": return this.openFish();
             case "method": return this.openMethod();
             case "gear": return this.openGear();

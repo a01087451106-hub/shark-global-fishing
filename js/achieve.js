@@ -126,7 +126,10 @@ const Achieve = {
                 }).join("")}
             </div>`;
         const input = container.querySelector("#ach-name");
-        input.onchange = () => { this.setPlayerName(input.value); };
+        input.onchange = () => {
+            if (Online.user) Online.rename(input.value).then(ok => { if (!ok) input.value = this.playerName(); });   // 로그인 중이면 계정 이름도 변경
+            else this.setPlayerName(input.value);
+        };
         container.querySelector(".ach-grid").onclick = e => {
             const c = e.target.closest(".ach-card.done");
             if (!c) return;

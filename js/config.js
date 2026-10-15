@@ -70,6 +70,13 @@ const CONFIG = {
     /* 손맛(진동): 파이팅 중 휴대폰 진동 세기 배율 (0 이면 끔, 1 기본) */
     HAPTIC_STRENGTH: 1,
 
+    /* ☁️ 온라인 (로그인 · 저장 · 랭킹) - Supabase 프로젝트 설정 → API 에서 복사
+       anon key 는 공개용 키라서 여기에 넣어도 괜찮아요 (service_role 키는 절대 넣지 마세요!)
+       비워두면 온라인 기능이 숨겨지고 예전처럼 이 기기에만 저장돼요. */
+    SUPABASE_URL: "",
+    SUPABASE_ANON_KEY: "",
+    KAKAO_LOGIN: false,             // Supabase 에 카카오 로그인 설정을 마치면 true
+
     /* 📅 출석체크 보상 (1일차 ~ 7일차, 7일 지나면 다시 1일차부터) */
     ATTEND_REWARDS: [3000, 5000, 8000, 10000, 15000, 20000, 50000],
 

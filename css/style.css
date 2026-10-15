@@ -222,7 +222,7 @@ body[data-screen="title"] .site-footer, body[data-screen="fishing"] .site-footer
 .diff-btn.diff-hard.active { background: #7a1f2a; border-color: var(--red); }
 .diff-btn.active small { color: #dbe9f5; }
 
-.menu-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; }
+.menu-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
 .menu-btn {
     display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
     padding: 26px 12px; border-radius: 18px; cursor: pointer; color: var(--white);
@@ -636,3 +636,43 @@ a.btn { text-decoration: none; display: inline-flex; align-items: center; justif
 .btn-cafe:hover { filter: brightness(1.08); }
 .brag-steps { text-align: left; max-width: 340px; margin: 8px auto; }
 @media (max-width: 420px) { .attend-day span { font-size: 0.65rem; } }
+
+/* ================= 온라인: 로그인 · 랭킹 · 대물 소식 ================= */
+.nav-login { color: inherit; font-family: inherit; cursor: pointer; max-width: 140px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.nav-login.logged { color: var(--gold); }
+.text-in { width: 100%; max-width: 340px; padding: 11px 12px; border-radius: 10px; border: 1px solid var(--line); background: var(--navy-2); color: var(--white); font: inherit; margin: 4px auto; display: block; }
+.login-box .btn-lg { width: 100%; max-width: 340px; margin: 6px auto; display: flex; justify-content: center; }
+.btn-kakao { background: #FEE500; color: #191919; border: 0; font-weight: 800; }
+.btn-kakao:hover { filter: brightness(0.97); }
+.or { display: flex; align-items: center; gap: 8px; max-width: 340px; margin: 10px auto; color: var(--muted); font-size: 0.8rem; }
+.or::before, .or::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+.login-links { display: flex; justify-content: center; gap: 16px; flex-wrap: wrap; margin-top: 8px; font-size: 0.85rem; }
+.login-links a { color: var(--sea-light); cursor: pointer; text-decoration: underline; }
+.pick-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 12px 0; }
+.pick { display: flex; flex-direction: column; gap: 4px; padding: 14px 8px; border-radius: 14px; border: 1px solid var(--line); background: var(--navy-2); color: var(--white); cursor: pointer; font: inherit; }
+.pick:hover { border-color: var(--gold); }
+.pick span { color: var(--gold); font-weight: 800; }
+.pick small { color: var(--muted); }
+.catch-feed { position: fixed; left: 0; right: 0; bottom: 0; z-index: 40; display: none; align-items: center; gap: 8px; padding: 7px 14px calc(7px + env(safe-area-inset-bottom, 0px)); font-size: 0.85rem;
+    background: rgba(6, 17, 31, 0.94); border-top: 1px solid var(--line); overflow: hidden; white-space: nowrap; }
+body:has(.catch-feed.show) .site-footer { padding-bottom: 44px; }
+body:has(.catch-feed.show) #app-toasts { bottom: 52px; }
+.catch-feed.show { display: flex; }
+.catch-feed .feed-tx { overflow: hidden; text-overflow: ellipsis; animation: feed-in 0.5s ease-out; }
+.catch-feed.fresh { background: rgba(242, 201, 76, 0.18); border-color: var(--gold); }
+.catch-feed .grade-trophy { color: var(--gold); } .catch-feed .grade-monster { color: #ff7ad9; font-weight: 800; }
+body[data-screen="title"] .catch-feed, body[data-screen="fishing"] .catch-feed { display: none; }
+@keyframes feed-in { from { transform: translateY(100%); opacity: 0; } to { transform: none; opacity: 1; } }
+.rank-tabs { margin: 8px 0 12px; }
+.rank-login { display: flex; gap: 10px; align-items: center; justify-content: center; flex-wrap: wrap; padding: 10px; margin-bottom: 8px; border-radius: 12px; background: rgba(242, 201, 76, 0.1); border: 1px solid rgba(242, 201, 76, 0.35); }
+.rank-list { display: flex; flex-direction: column; gap: 6px; }
+.rank-row { display: grid; grid-template-columns: 44px 1fr auto auto; gap: 10px; align-items: center; padding: 10px 12px; border-radius: 12px; background: var(--navy-2); border: 1px solid var(--line); }
+.rank-row.mine { border-color: var(--gold); box-shadow: 0 0 0 1px var(--gold); }
+.rank-no { font-size: 1.3rem; font-weight: 900; text-align: center; }
+.rank-name { display: flex; flex-direction: column; min-width: 0; }
+.rank-name b, .rank-name small { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.rank-name small { color: var(--muted); }
+.rank-size { display: flex; flex-direction: column; align-items: flex-end; }
+.rank-size b { color: var(--gold); font-size: 1.05rem; }
+.rank-meta { text-align: right; }
+@media (max-width: 560px) { .rank-row { grid-template-columns: 36px 1fr auto; } .rank-meta { display: none; } }

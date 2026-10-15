@@ -25,6 +25,7 @@ const Records = {
         res.shop = Shop.settle(rec, res);                 // 판매 · 보너스 골드 (rec.gold 기록)
         Store.saveRecords(list);
         res.achieved = Achieve.check();                   // 새로 달성한 업적 (보너스 골드 지급)
+        Online.reportCatch(rec);                          // 로그인 중이면 랭킹 · 대물 소식에 등록
         return res;
     },
 
