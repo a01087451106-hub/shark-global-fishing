@@ -11,7 +11,10 @@ const Store = {
         GOLD: "sharkGold",
         OWNED: "sharkOwnedGear",
         MEDALS: "sharkMedals",
-        ECON_INIT: "sharkEconomyInit"
+        ECON_INIT: "sharkEconomyInit",
+        ACHIEVE: "sharkAchievements",
+        TITLE: "sharkTitle",
+        NAME: "sharkPlayerName"
     },
 
     get(key, fallback) {

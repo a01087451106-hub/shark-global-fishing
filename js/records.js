@@ -24,6 +24,7 @@ const Records = {
         const res = { isNew: !prev || rec.weight > prev.weight, prev };
         res.shop = Shop.settle(rec, res);                 // 판매 · 보너스 골드 (rec.gold 기록)
         Store.saveRecords(list);
+        res.achieved = Achieve.check();                   // 새로 달성한 업적 (보너스 골드 지급)
         return res;
     },
 
@@ -73,6 +74,7 @@ const Records = {
                         <div class="muted small">${U.escape(this.regionNameOf(b))} · ${U.methodLabel(b.method)} · ${U.escape(this.lureNameOf(b))}</div>
                         <div class="muted small">${U.formatDate(b.date)} · ${I18N.count(this.countOf(f.id))}</div>
                         ${this.nextMedalHTML(f.id)}
+                        <button class="btn btn-ghost btn-sm card-btn" data-card="${b.id}">${L("📸 인증샷 카드", "📸 Trophy Card")}</button>
                     </div>
                 </div>`).join("")}
             </div>
@@ -87,6 +89,13 @@ const Records = {
                     <span class="muted small">${U.formatDate(r.date)}</span>
                 </div>`).join("")}
             </div>` : ""}`;
+        container.onclick = e => {
+            const b = e.target.closest("[data-card]");
+            if (!b) return;
+            Sound.click();
+            const rec = this.all().find(r => r.id === b.dataset.card);
+            if (rec) TrophyCard.open(rec);
+        };
     },
 
     /* 🐟 물고기 도감 */

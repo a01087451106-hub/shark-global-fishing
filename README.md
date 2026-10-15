@@ -282,6 +282,7 @@ SHARK_DATA.defaultGradeChance = { NORMAL: 65, GOOD: 22, BIG: 9, TROPHY: 3, MONST
 | `sharkHaptic` | 손맛 진동 ON/OFF |
 | `sharkLang` / `sharkCountry` | 직접 고른 언어 / 접속 국가 |
 | `sharkGold` / `sharkOwnedGear` / `sharkMedals` | 골드 / 구매한 장비 / 어종별 메달 |
+| `sharkAchievements` / `sharkTitle` / `sharkPlayerName` | 달성한 업적 / 착용 칭호 / 낚시꾼 이름 |
 
 메인 메뉴의 **🗑 기록 초기화** 로 낚시 기록과 골드 · 구매 장비 · 메달을 지울 수 있습니다.
 
@@ -295,6 +296,12 @@ SHARK_DATA.defaultGradeChance = { NORMAL: 65, GOOD: 22, BIG: 9, TROPHY: 3, MONST
 - 낚시대 · 릴은 골드로 구매. POWER 60 이하 낚시대와 VJ3 릴은 처음부터 무료
 - 장비 가격 = (POWER − 55)² × K. 상품에 `gamePrice: 50000` 을 쓰면 그 가격으로 고정
 - 게임 전용 골드이며 실제 돈과 무관 (브라우저에만 저장되므로 실제 경품 지급에는 쓰지 마세요)
+
+## 업적 · 칭호 → `js/achieve.js` / 📸 인증샷 카드 → `js/card.js`
+
+- 업적 20개 (첫 참치, 30kg 클럽, 도감 마스터 등). 달성하면 보너스 골드 + 칭호
+- 업적 추가·수정은 `js/achieve.js` 맨 위 `LIST` 에서 한 줄씩
+- 인증샷 카드: 1080×1350 이미지. 휴대폰은 공유하기(카톡·인스타), PC는 이미지 저장 + 링크 복사
 
 ---
 

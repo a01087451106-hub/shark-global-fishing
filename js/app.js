@@ -12,6 +12,7 @@ const App = {
         Sound.init();
         Haptic.init();
         Shop.init();
+        Achieve.init();
         I18N.applyStatic();
         this.applyLinks();
         this.initTitle();
@@ -44,7 +45,7 @@ const App = {
             case "fish": this.openFish(); break;
             case "method": this.openMethod(); break;
             case "gear": this.renderGear(); break;
-            case "best": case "dex": case "equipment": this.go(this.current); break;
+            case "best": case "dex": case "equipment": case "achieve": this.go(this.current); break;
             case "fishing": Fishing.hudInfo(); Fishing.updateDepthMeter(); break;
         }
     },
@@ -80,6 +81,7 @@ const App = {
             case "best": Records.renderBest(U.$("#best-body")); break;
             case "dex": Records.renderDex(U.$("#dex-body")); break;
             case "equipment": this.renderEquipment(); break;
+            case "achieve": Achieve.render(U.$("#achieve-body")); break;
             case "fish": return this.openFish();
             case "method": return this.openMethod();
             case "gear": return this.openGear();
@@ -162,6 +164,20 @@ const App = {
         this.renderDifficulty();
         U.$("#menu-total").textContent = total;
         U.$("#menu-gold").textContent = Shop.fmt(Shop.gold());
+        const t = Achieve.title(), nm = Achieve.playerName();
+        U.$("#menu-title").innerHTML = t || nm ? `${U.escape(t)} <b>${U.escape(nm || "ANGLER")}</b>` : "";
+    },
+
+    /* 화면 아래쪽에 잠깐 뜨는 알림 */
+    toast(text) {
+        let wrap = U.$("#app-toasts");
+        if (!wrap) { wrap = document.createElement("div"); wrap.id = "app-toasts"; document.body.appendChild(wrap); }
+        const el = document.createElement("div");
+        el.className = "app-toast";
+        el.textContent = text;
+        wrap.appendChild(el);
+        setTimeout(() => el.classList.add("out"), 2600);
+        setTimeout(() => el.remove(), 3100);
     },
 
     confirmReset() {
@@ -177,7 +193,7 @@ const App = {
         box.onclick = e => {
             const b = e.target.closest("[data-act]");
             if (!b) return;
-            if (b.dataset.act === "yes") { Store.clearRecords(); Shop.reset(); this.renderMenu(); }
+            if (b.dataset.act === "yes") { Store.clearRecords(); Shop.reset(); Achieve.reset(); Achieve.init(); this.renderMenu(); }
             this.closeModal();
         };
     },
@@ -196,6 +212,8 @@ const App = {
                 <p>잡은 물고기는 <b>무게 × 어종 가격</b>으로 자동 판매돼 골드가 쌓여요. 대물 등급일수록, 난이도가 높을수록 비싸게 팔려요.
                 <b>신기록</b>을 깨면 판매가 <b>×2</b>, 어종별 <b>🥉브론즈 → 🥈실버 → 🥇골드 → 👑레전드</b> 메달을 처음 받으면 보너스 골드!
                 모은 골드로 <b>🎒 장비</b> 메뉴에서 더 강한 낚시대 · 릴을 사세요. (게임 전용 골드 · 실제 돈과 무관)</p>
+                <h4>🎖 업적 · 칭호 / 📸 인증샷</h4>
+                <p>"첫 참치", "30kg 클럽" 같은 업적을 달성하면 보너스 골드와 <b>칭호</b>를 얻어요. 큰 고기를 잡으면 <b>📸 인증샷 카드</b>를 만들어 카톡 · 인스타로 자랑해보세요!</p>
                 <h4>🎚 난이도 하 · 중 · 상</h4>
                 <p>메인 메뉴에서 고를 수 있어요. <b>상</b>은 텐션이 금방 차오르고, 물고기가 더 오래 버티고, 입질도 적지만 <b>대물 확률이 올라가요</b>.</p>
                 <h4>📳 손맛</h4>
@@ -229,6 +247,8 @@ const App = {
                 <p>Every fish you land is sold automatically for <b>weight × species price</b>. Bigger grades and harder difficulty pay more.
                 Break a <b>personal record</b> for <b>×2</b>, and earn bonus gold the first time you get each species medal: <b>🥉Bronze → 🥈Silver → 🥇Gold → 👑Legend</b>.
                 Spend gold on stronger rods and reels in the <b>🎒 Gear</b> menu. (Game-only gold · not real money)</p>
+                <h4>🎖 Achievements · Titles / 📸 Trophy Card</h4>
+                <p>Unlock achievements like "First Tuna" or "30kg Club" for bonus gold and a <b>title</b>. Land a big one and make a <b>📸 Trophy Card</b> to share!</p>
                 <h4>🎚 Difficulty EASY · NORMAL · HARD</h4>
                 <p>Choose it in the main menu. On <b>HARD</b> tension builds fast, fish fight longer and bite less, but <b>trophy chances go up</b>.</p>
                 <h4>📳 Feel the fight</h4>
@@ -429,8 +449,9 @@ const App = {
     },
 
     /* ---------------- 결과 ---------------- */
-    showResult(c, isNew, shop) {
+    showResult(c, isNew, shop, achieved) {
         const fish = Game.fishById(c.fishId);
+        const ach = (achieved || []).map(a => `<div class="ach-up">🎖 ${L("업적 달성", "Achievement")}: <b>${a.icon} ${U.escape(L(a.ko, a.en))}</b> <span class="gold-txt">+${Shop.fmt(a.gold)}</span><small>${L("새 칭호를 얻었어요!", "New title unlocked!")}</small></div>`).join("");
         const money = shop ? `
                 <div class="sale-box">
                     ${shop.lines.map(l => `<div class="sale-row"><span>${U.escape(l.label)}</span><b>+${Shop.fmt(l.g)}</b></div>`).join("")}
@@ -455,6 +476,8 @@ const App = {
                     ${c.difficulty ? `<div class="muted small">${L("난이도", "Level")} ${Game.difficultyLabel(c.difficulty)}</div>` : ""}
                 </div>
                 ${money}
+                ${ach}
+                <button class="btn ${gi >= 2 || isNew ? "btn-gold" : "btn-ghost"} btn-card" data-act="card">${L("📸 인증샷 카드 만들기", "📸 Make Trophy Card")}</button>
                 <p class="ok small">${L("✓ 기록 저장 완료", "✓ Record saved")}</p>
                 <div class="detail-actions">
                     <button class="btn btn-primary btn-lg" data-act="again">${L("🎣 다시 낚시", "🎣 Fish Again")}</button>
@@ -464,7 +487,7 @@ const App = {
                     <button class="btn btn-gold" data-act="shop">${L("💰 장비 사러 가기", "💰 Shop Gear")}</button>
                 </div>
             </div>`, () => Fishing.newRound(false));
-        this.bindResultButtons(box);
+        this.bindResultButtons(box, c);
     },
 
     showFail(title, tip) {
@@ -481,12 +504,13 @@ const App = {
         this.bindResultButtons(box);
     },
 
-    bindResultButtons(box) {
+    bindResultButtons(box, rec) {
         box.onclick = e => {
             const b = e.target.closest("[data-act]");
             if (!b) return;
             Sound.click();
             const act = b.dataset.act;
+            if (act === "card") return TrophyCard.open(rec, () => Fishing.newRound(false));
             this.closeModal(true);
             if (act === "again") Fishing.newRound(false);
             if (act === "gear") { this.gearStep = "rod"; this.openGear(); }

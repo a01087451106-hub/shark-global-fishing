@@ -10,6 +10,7 @@
 @media (max-width: 900px) {
     .menu-grid { grid-template-columns: repeat(2, 1fr); }
     .menu-main { grid-column: span 2; }
+    .menu-btn:last-child:nth-child(even) { grid-column: span 2; }
     .hist-row { grid-template-columns: auto 1fr 1fr; }
     .hist-row .muted:nth-of-type(n) { grid-column: auto; }
 }

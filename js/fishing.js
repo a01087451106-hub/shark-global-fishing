@@ -496,7 +496,7 @@ const Fishing = {
         const c = this.catchObj;
         const result = Records.add(c);
         this.phase = "result";
-        App.showResult(c, result.isNew, result.shop);
+        App.showResult(c, result.isNew, result.shop, result.achieved);
     },
 
     /* ---------------- 메인 루프 ---------------- */

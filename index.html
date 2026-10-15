@@ -83,6 +83,7 @@
                 <h2>MAIN MENU</h2>
                 <div class="menu-total"><span data-en="Total catch">총 조과</span> <b id="menu-total">0</b><span data-en=" fish">마리</span>
                     <span class="menu-gold">💰 <b id="menu-gold">0 G</b></span></div>
+                <div class="menu-title" id="menu-title"></div>
             </div>
             <div class="menu-notes" id="menu-notes"></div>
             <div class="diff-select" id="diff-select"></div>
@@ -92,6 +93,7 @@
                 <button class="menu-btn" data-go="best"><span class="mi">🏆</span><span class="ml" data-en="My Best Catches">나의 최대어</span><small data-en="Top record per species">어종별 최고 기록</small></button>
                 <button class="menu-btn" data-go="dex"><span class="mi">🐟</span><span class="ml" data-en="Fish Guide">물고기 도감</span><small data-en="Your caught fish collection">잡은 물고기 모음</small></button>
                 <button class="menu-btn" data-go="equipment"><span class="mi">🎒</span><span class="ml" data-en="Gear">장비</span><small data-en="Buy rods · reels with gold">골드로 낚시대 · 릴 구매</small></button>
+                <button class="menu-btn" data-go="achieve"><span class="mi">🎖</span><span class="ml" data-en="Achievements">업적 · 칭호</span><small data-en="Bonus gold · titles">보너스 골드 · 칭호</small></button>
             </div>
             <div class="menu-small">
                 <button class="btn btn-ghost btn-sm" id="btn-help" data-en="❓ How to Play">❓ 게임 방법</button>
@@ -199,6 +201,15 @@
             <div id="dex-body"></div>
         </section>
 
+        <!-- ================= 업적 · 칭호 ================= -->
+        <section class="screen" id="screen-achieve">
+            <div class="screen-bar">
+                <button class="back" data-go="menu" data-en="← Menu">← 메뉴</button>
+                <h2 data-en="🎖 Achievements · Titles">🎖 업적 · 칭호</h2>
+            </div>
+            <div id="achieve-body"></div>
+        </section>
+
         <!-- ================= 장비 둘러보기 ================= -->
         <section class="screen" id="screen-equipment">
             <div class="screen-bar">
@@ -239,6 +250,8 @@
     <script src="js/world.js"></script>
     <script src="js/records.js"></script>
     <script src="js/shop.js"></script>
+    <script src="js/achieve.js"></script>
+    <script src="js/card.js"></script>
     <script src="js/battle.js"></script>
     <script src="js/scene.js"></script>
     <script src="js/fishing.js"></script>

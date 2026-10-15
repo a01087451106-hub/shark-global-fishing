@@ -160,6 +160,8 @@ const Shop = {
                 App.closeModal(true);
                 Sound.landing();
                 Haptic.buzz([40, 40, 90]);
+                App.toast(L(`✓ ${I18N.name(item)} 구매 완료!`, `✓ Bought ${I18N.name(item)}!`));
+                Achieve.check().forEach(a => App.toast(`🎖 ${L(a.ko, a.en)} +${this.fmt(a.gold)}`));
                 onDone && onDone(item);
                 return;
             }
