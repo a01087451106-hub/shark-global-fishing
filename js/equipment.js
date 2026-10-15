@@ -76,7 +76,7 @@ const Equip = {
     /* ⭐ 추천 장비로 시작 */
     recommend(method, fish) {
         const pick = list => {
-            const scored = list.map(it => ({
+            const scored = list.filter(it => Shop.isOwned(it)).map(it => ({   // 내가 가진 장비 중에서만
                 it,
                 s: (it.targetFish.includes(fish.id) ? 0 : 5) +
                     Math.abs(this.stat(it, "power", 3) - fish.recommendedPower)
@@ -108,6 +108,7 @@ const Equip = {
         /* 루어는 이미 대상어로 걸러져 있으므로 추천 표시는 낚시대/릴에만 */
         const recommended = kind !== "lure" && opts.fishId && this.isRecommended(item, opts.fishId);
         const selected = opts.selectedId === item.id;
+        const owned = Shop.isOwned(item), price = Shop.price(item);
         const methods = this.methodsOf(item);
         const target = this.fishNames(item.targetFish).slice(0, 3).join(" / ");
         let extra = "";
@@ -117,9 +118,12 @@ const Equip = {
             <div class="gear-meta">${L("난이도", "Difficulty")} <b>${U.escape(I18N.difficulty(item.difficulty))}</b></div>`;
         if (kind === "lure") extra = `<div class="gear-meta">${U.escape(item.type)}${item.weight ? " · " + item.weight + "g" : ""}</div>`;
         return `
-        <div class="gear-card ${selected ? "selected" : ""}" data-kind="${kind}" data-id="${item.id}">
+        <div class="gear-card ${selected ? "selected" : ""} ${owned ? "" : "locked"}" data-kind="${kind}" data-id="${item.id}">
             ${recommended ? `<span class="tag tag-rec">${L("추천", "Best")}</span>` : ""}
             ${selected ? `<span class="tag tag-sel">${L("✓ 선택됨", "✓ Selected")}</span>` : ""}
+            ${kind !== "lure" ? (owned
+                ? `<div class="gear-own">${price ? L("✓ 보유중", "✓ Owned") : L("✓ 기본 지급", "✓ Starter")}</div>`
+                : `<div class="gear-price">🔒 💰 ${Shop.fmt(price)}</div>`) : ""}
             ${U.gearImage(item)}
             <div class="gear-name">${U.escape(I18N.name(item))}</div>
             ${item.brand ? `<div class="gear-brand">${U.escape(I18N.f(item, "brand"))}</div>` : ""}
@@ -127,7 +131,8 @@ const Equip = {
             <div class="gear-methods">${methods.map(m => `<span class="chip chip-${m}">${U.methodLabel(m)}</span>`).join("")}</div>
             ${extra}
             <div class="gear-actions">
-                ${opts.selectable ? `<button class="btn btn-primary btn-sm" data-act="select">${this.selectLabel(item, kind)}</button>` : ""}
+                ${!owned ? `<button class="btn btn-gold btn-sm" data-act="buy">${L("💰 구매", "💰 Buy")}</button>`
+                    : opts.selectable ? `<button class="btn btn-primary btn-sm" data-act="select">${this.selectLabel(item, kind)}</button>` : ""}
                 <button class="btn btn-ghost btn-sm" data-act="detail">${L("자세히", "Details")}</button>
                 <button class="btn btn-mall btn-sm" data-act="mall">${L("지깅몰에서 보기", "View at Jigging Mall")}</button>
             </div>
@@ -167,7 +172,8 @@ const Equip = {
             <h4>GAME STAT <small class="muted">${L("(게임 전용 수치 · 실제 스펙과 무관)", "(game-only values · unrelated to real specs)")}</small></h4>
             ${statRows}
             <div class="detail-actions">
-                ${selectable ? `<button class="btn btn-primary" data-act="select">${this.selectLabel(item, kind)}</button>` : ""}
+                ${!Shop.isOwned(item) ? `<button class="btn btn-gold" data-act="buy">💰 ${L("구매", "Buy")} ${Shop.fmt(Shop.price(item))}</button>`
+                    : selectable ? `<button class="btn btn-primary" data-act="select">${this.selectLabel(item, kind)}</button>` : ""}
                 <button class="btn btn-mall" data-act="mall">${kind === "reel" ? L("지깅몰에서 실제 제품 보기", "View the real product at Jigging Mall") : L("지깅몰에서 보기", "View at Jigging Mall")}</button>
             </div>
         </div>`;
@@ -188,27 +194,31 @@ const Equip = {
     },
 
     /* 카드 목록 안의 버튼 처리 (선택 / 자세히 / 지깅몰) */
-    bindList(container, onSelect) {
+    /* onBought: 구매 후 화면을 다시 그리는 함수 */
+    bindList(container, onSelect, onBought) {
         container.onclick = e => {
             const card = e.target.closest(".gear-card");
             if (!card) return;
             const kind = card.dataset.kind, id = card.dataset.id;
             const item = this.itemBy(kind, id);
             const btn = e.target.closest("[data-act]");
-            const act = btn ? btn.dataset.act : (onSelect ? "select" : "detail");
+            let act = btn ? btn.dataset.act : (onSelect ? "select" : "detail");
+            if (act === "select" && !Shop.isOwned(item)) act = "buy";
             Sound.click();
             if (act === "mall") return U.openExternal(this.purchaseUrl(item));
-            if (act === "detail") return this.openDetail(item, kind, onSelect);
+            if (act === "buy") return Shop.confirmBuy(item, onBought);
+            if (act === "detail") return this.openDetail(item, kind, onSelect, onBought);
             if (act === "select" && onSelect) onSelect(kind, item);
         };
     },
 
-    openDetail(item, kind, onSelect) {
+    openDetail(item, kind, onSelect, onBought) {
         const box = App.openModal(this.detailHTML(item, kind, !!onSelect));
         box.onclick = e => {
             const btn = e.target.closest("[data-act]");
             if (!btn) return;
             if (btn.dataset.act === "mall") U.openExternal(this.purchaseUrl(item));
+            if (btn.dataset.act === "buy") Shop.confirmBuy(item, onBought);
             if (btn.dataset.act === "select" && onSelect) { App.closeModal(); onSelect(kind, item); }
         };
     }

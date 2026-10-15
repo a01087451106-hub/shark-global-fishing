@@ -21,8 +21,10 @@ const Records = {
             const idx = list.findIndex(r => !keep.has(r.id));
             if (idx >= 0) list.splice(idx, 1);
         }
+        const res = { isNew: !prev || rec.weight > prev.weight, prev };
+        res.shop = Shop.settle(rec, res);                 // 판매 · 보너스 골드 (rec.gold 기록)
         Store.saveRecords(list);
-        return { isNew: !prev || rec.weight > prev.weight, prev };
+        return res;
     },
 
     bestOf(fishId, list) {
@@ -51,11 +53,14 @@ const Records = {
         const bests = fishList.map(f => ({ f, b: this.bestOf(f.id, list) })).filter(x => x.b)
             .sort((a, b) => b.b.weight - a.b.weight);
         const recent = list.slice().sort((a, b) => b.date - a.date).slice(0, 15);
+        const longest = list.reduce((b, r) => (!b || r.length > b.length ? r : b), null);
         container.innerHTML = `
             <div class="stat-tiles">
                 <div class="tile"><b>${list.length}</b><span>${L("총 조과", "Total catch")}</span></div>
                 <div class="tile"><b>${bests.length} / ${fishList.length}</b><span>${L("잡은 어종", "Species caught")}</span></div>
                 <div class="tile"><b>${bests.length ? U.formatWeight(bests[0].b.weight) : "-"}</b><span>${L("최고 무게", "Heaviest")}</span></div>
+                <div class="tile"><b>${longest ? longest.length + "cm" : "-"}</b><span>${L("최장 길이", "Longest")}</span></div>
+                <div class="tile tile-gold"><b>${Shop.fmt(Shop.gold())}</b><span>${L("내 골드", "My gold")}</span></div>
             </div>
             ${bests.length === 0 ? `<div class="empty">${L("아직 기록이 없어요.<br>🎣 낚시를 시작해서 첫 번째 물고기를 잡아보세요!", "No records yet.<br>🎣 Start fishing and land your first fish!")}</div>` : ""}
             <div class="card-grid best-grid">
@@ -63,10 +68,11 @@ const Records = {
                 <div class="best-card">
                     <div class="fish-pic">${U.fishSVG(f)}</div>
                     <div class="best-body">
-                        <div class="best-name">${U.escape(I18N.name(f))} <span class="grade ${this.gradeClass(b.grade)}">${U.escape(b.gradeLabel)}</span></div>
+                        <div class="best-name">${Shop.medalBadge(Shop.medalOf(f.id))} ${U.escape(I18N.name(f))} <span class="grade ${this.gradeClass(b.grade)}">${U.escape(b.gradeLabel)}</span></div>
                         <div class="best-size"><b>${b.length}cm</b> · <b>${U.formatWeight(b.weight)}</b></div>
                         <div class="muted small">${U.escape(this.regionNameOf(b))} · ${U.methodLabel(b.method)} · ${U.escape(this.lureNameOf(b))}</div>
                         <div class="muted small">${U.formatDate(b.date)} · ${I18N.count(this.countOf(f.id))}</div>
+                        ${this.nextMedalHTML(f.id)}
                     </div>
                 </div>`).join("")}
             </div>
@@ -76,6 +82,7 @@ const Records = {
                     <span class="grade ${this.gradeClass(r.grade)}">${U.escape(r.gradeLabel)}</span>
                     <b>${U.escape(this.fishNameOf(r))}</b>
                     <span>${r.length}cm · ${U.formatWeight(r.weight)}</span>
+                    ${r.gold ? `<span class="gold-txt">+${Shop.fmt(r.gold)}</span>` : ""}
                     <span class="muted">${U.escape(this.regionNameOf(r))}</span>
                     <span class="muted small">${U.formatDate(r.date)}</span>
                 </div>`).join("")}
@@ -93,7 +100,7 @@ const Records = {
             const b = this.bestOf(f.id, list);
             return `<div class="dex-card ${b ? "caught" : ""}" data-id="${f.id}">
                         <div class="fish-pic">${U.fishSVG(f, { silhouette: !b })}</div>
-                        <div class="dex-name">${U.escape(I18N.name(f))}</div>
+                        <div class="dex-name">${b ? Shop.medalBadge(Shop.medalOf(f.id)) + " " : ""}${U.escape(I18N.name(f))}</div>
                         ${I18N.en ? "" : `<div class="muted small">${U.escape(f.nameEn)}</div>`}
                         <div class="dex-rec">${b ? `${L("최대", "Best")} ${b.length}cm · ${U.formatWeight(b.weight)}` : L("미포획", "Not caught")}</div>
                     </div>`;
@@ -105,6 +112,14 @@ const Records = {
             Sound.click();
             this.openFish(Game.fishById(c.dataset.id));
         };
+    },
+
+    /* 다음 메달까지 남은 길이 */
+    nextMedalHTML(fishId) {
+        const need = Shop.nextMedalLength(fishId);
+        if (need == null) return `<div class="small gold-txt">${L("👑 최고 메달 달성!", "👑 Top medal achieved!")}</div>`;
+        const m = Shop.MEDALS[Shop.medalOf(fishId) + 1];
+        return `<div class="small muted">${L(`다음 ${m.icon} ${m.ko}: ${need}cm 이상`, `Next ${m.icon} ${m.en}: ${need}cm+`)}</div>`;
     },
 
     openFish(f) {
@@ -124,7 +139,8 @@ const Records = {
                     <div><span class="muted">${L("파이팅 힘", "Fight power")}</span><b>${U.stars(f.fightPower)}</b></div>
                     <div><span class="muted">${L("시즌", "Season")}</span><b>${I18N.months(months)}</b></div>
                     <div><span class="muted">${L("최대어", "Max size")}</span><b>${f.sizeRange.max}cm · ${U.formatWeight(maxW)}</b></div>
-                    <div class="span2"><span class="muted">${L("나의 최대어", "My best")}</span><b>${b ? `${b.length}cm · ${U.formatWeight(b.weight)} (${U.escape(b.gradeLabel)})` : L("아직 없음", "None yet")}</b></div>
+                    <div class="span2"><span class="muted">${L("나의 최대어", "My best")}</span><b>${b ? `${Shop.medalBadge(Shop.medalOf(f.id), true)} ${b.length}cm · ${U.formatWeight(b.weight)} (${U.escape(b.gradeLabel)})` : L("아직 없음", "None yet")}</b></div>
+                    <div class="span2"><span class="muted">${L("판매가", "Sale price")}</span><b>💰 ${Shop.fmt(CONFIG.ECONOMY.FISH_PRICE_PER_KG[f.id] || CONFIG.ECONOMY.DEFAULT_PRICE_PER_KG)} / kg</b></div>
                     <div class="span2"><span class="muted">${L("잡을 수 있는 곳", "Where to catch")}</span><b>${U.escape(regions.map(r => I18N.name(r)).join(", ") || "-")}</b></div>
                 </div>
             </div>`);

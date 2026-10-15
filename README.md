@@ -281,8 +281,20 @@ SHARK_DATA.defaultGradeChance = { NORMAL: 65, GOOD: 22, BIG: 9, TROPHY: 3, MONST
 | `sharkDifficulty` | 난이도 (하 · 중 · 상) |
 | `sharkHaptic` | 손맛 진동 ON/OFF |
 | `sharkLang` / `sharkCountry` | 직접 고른 언어 / 접속 국가 |
+| `sharkGold` / `sharkOwnedGear` / `sharkMedals` | 골드 / 구매한 장비 / 어종별 메달 |
 
-메인 메뉴의 **🗑 기록 초기화** 로 낚시 기록만 지울 수 있습니다.
+메인 메뉴의 **🗑 기록 초기화** 로 낚시 기록과 골드 · 구매 장비 · 메달을 지울 수 있습니다.
+
+---
+
+## 골드 · 장비 구매 · 메달 → `js/shop.js`, 숫자는 `js/config.js` 의 `ECONOMY`
+
+- 잡은 물고기는 자동 판매: **무게(kg) × 어종 kg당 가격 × 등급 배율 × 난이도 배율**
+- 첫 포획 보너스, 신기록(최고 무게 · 최장 길이)이면 판매가 ×2
+- 어종별 메달 🥉브론즈(첫 포획) → 🥈실버 → 🥇골드 → 👑레전드, 처음 받을 때 보너스 골드
+- 낚시대 · 릴은 골드로 구매. POWER 60 이하 낚시대와 VJ3 릴은 처음부터 무료
+- 장비 가격 = (POWER − 55)² × K. 상품에 `gamePrice: 50000` 을 쓰면 그 가격으로 고정
+- 게임 전용 골드이며 실제 돈과 무관 (브라우저에만 저장되므로 실제 경품 지급에는 쓰지 마세요)
 
 ---
 

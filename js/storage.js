@@ -7,7 +7,11 @@ const Store = {
         RECORDS: "sharkRecords",
         SOUND: "sharkSound",
         DIFFICULTY: "sharkDifficulty",
-        HAPTIC: "sharkHaptic"
+        HAPTIC: "sharkHaptic",
+        GOLD: "sharkGold",
+        OWNED: "sharkOwnedGear",
+        MEDALS: "sharkMedals",
+        ECON_INIT: "sharkEconomyInit"
     },
 
     get(key, fallback) {

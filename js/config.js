@@ -60,5 +60,29 @@ const CONFIG = {
     DEFAULT_DIFFICULTY: "normal",
 
     /* 손맛(진동): 파이팅 중 휴대폰 진동 세기 배율 (0 이면 끔, 1 기본) */
-    HAPTIC_STRENGTH: 1
+    HAPTIC_STRENGTH: 1,
+
+    /* 골드 · 상점 (js/shop.js) - 게임 전용 골드, 실제 돈과 무관
+       판매가 = 무게(kg) × FISH_PRICE_PER_KG × GRADE_MULT × DIFFICULTY_MULT */
+    ECONOMY: {
+        FISH_PRICE_PER_KG: {
+            octopus: 20000, squid: 8000, snapper: 3000, spanish_mackerel: 2500,
+            yellowtail: 2000, amberjack: 2500, kingfish: 2500, cod: 1500, halibut: 2000,
+            mahimahi: 2500, wahoo: 3000, roosterfish: 3000, gt: 3000, sailfish: 3000, marlin: 2500,
+            tuna: 6000, yellowfin: 5000, bigeye: 5500, bluefin: 7000, dogtooth: 4000
+        },
+        DEFAULT_PRICE_PER_KG: 2500,
+        MIN_PRICE: 500,                                     // 아무리 작아도 최소 판매가
+        GRADE_MULT: { NORMAL: 1, GOOD: 1.15, BIG: 1.3, TROPHY: 1.7, MONSTER: 2.5 },
+        DIFFICULTY_MULT: { easy: 0.8, normal: 1, hard: 1.3 },
+        RECORD_BONUS_MULT: 2,                               // 신기록이면 판매가 ×2
+        FIRST_CATCH_BONUS: 5000,                            // 그 어종을 처음 잡으면
+        MEDAL_SIZE: [0, 0.35, 0.6, 0.85],                   // 메달 기준 크기 비율 (0=최소, 1=최대어): 브론즈=첫 포획, 실버, 골드, 레전드
+        MEDAL_BONUS: [0, 3000, 20000, 60000, 200000],       // 메달을 처음 받을 때 보너스
+        FREE_ROD_POWER: 60,                                 // POWER 이하 낚시대는 무료 (처음부터 사용)
+        FREE_GEAR: ["vj3"],                                 // 처음부터 무료인 장비 id
+        PRICE_BASE_POWER: 55,                               // 장비 가격 = (POWER - 55)² × K
+        ROD_PRICE_K: 400,
+        REEL_PRICE_K: 320
+    }
 };

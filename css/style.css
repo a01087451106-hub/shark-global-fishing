@@ -561,3 +561,28 @@ body[data-screen="title"] .site-footer, body[data-screen="fishing"] .site-footer
 .fish-pic img.fish-real { width: 96%; height: 100%; object-fit: contain; }
 .mini-fish img.fish-real { width: 72px; height: 36px; object-fit: contain; }
 .dex-card:not(.caught) img.fish-real { opacity: 0.85; }
+
+/* ================= 골드 · 상점 · 메달 (js/shop.js) ================= */
+.menu-gold { margin-left: 14px; }
+.menu-gold b, .gold-txt { color: var(--gold); font-weight: 800; }
+.tile-gold b { color: var(--gold); }
+.btn-gold { background: linear-gradient(180deg, #ffd75e, #e0a81e); color: #2a1a00; border: 0; font-weight: 800; }
+.btn-gold:hover { filter: brightness(1.08); }
+.gear-card.locked .gear-img { filter: grayscale(0.6) brightness(0.75); }
+.gear-price { color: var(--gold); font-weight: 800; font-size: 0.95rem; }
+.gear-own { color: var(--green); font-size: 0.8rem; font-weight: 700; }
+.buy-price { font-size: 1.15rem; }
+.buy-price b { color: var(--gold); }
+.equip-wallet { text-align: center; margin: 4px 0 10px; }
+.equip-wallet b { color: var(--gold); font-size: 1.15rem; }
+.sale-box { margin: 12px auto 6px; max-width: 340px; padding: 10px 14px; border-radius: 12px;
+    background: rgba(255, 200, 60, 0.08); border: 1px solid rgba(255, 200, 60, 0.35); text-align: left; }
+.sale-row { display: flex; justify-content: space-between; gap: 10px; padding: 3px 0; font-size: 0.92rem; }
+.sale-row b { color: var(--gold); white-space: nowrap; }
+.sale-total { border-top: 1px dashed rgba(255, 200, 60, 0.4); margin-top: 4px; padding-top: 6px; font-size: 1.05rem; }
+.sale-box .muted, .sale-box .next-gear { text-align: center; margin-top: 4px; }
+.new-record small { display: block; font-size: 0.72em; opacity: 0.85; }
+.medal-up { font-size: 1.2rem; font-weight: 800; color: var(--gold); margin: 4px 0; animation: medal-pop 0.6s ease-out; }
+.medal { font-weight: 800; white-space: nowrap; }
+.medal-1 { color: #d08b4f; } .medal-2 { color: #cfd8e2; } .medal-3 { color: var(--gold); } .medal-4 { color: #ff7ad9; }
+@keyframes medal-pop { 0% { transform: scale(0.4); opacity: 0; } 70% { transform: scale(1.15); } 100% { transform: scale(1); opacity: 1; } }

@@ -11,6 +11,7 @@ const App = {
     init() {
         Sound.init();
         Haptic.init();
+        Shop.init();
         I18N.applyStatic();
         this.applyLinks();
         this.initTitle();
@@ -160,13 +161,14 @@ const App = {
         U.$("#menu-notes").innerHTML = notes.map(n => `<div>${n}</div>`).join("");
         this.renderDifficulty();
         U.$("#menu-total").textContent = total;
+        U.$("#menu-gold").textContent = Shop.fmt(Shop.gold());
     },
 
     confirmReset() {
         const box = this.openModal(`
             <div class="detail center">
                 <h3>${L("기록 초기화", "Reset Records")}</h3>
-                <p>${L("모든 낚시 기록(최대어·도감)을 지울까요?<br>되돌릴 수 없어요.", "Delete all fishing records (best catches · fish guide)?<br>This cannot be undone.")}</p>
+                <p>${L("모든 낚시 기록(최대어·도감)과 골드·구매한 장비·메달을 지울까요?<br>되돌릴 수 없어요.", "Delete all fishing records (best catches · fish guide), gold, purchased gear and medals?<br>This cannot be undone.")}</p>
                 <div class="detail-actions">
                     <button class="btn btn-danger" data-act="yes">${L("기록 지우기", "Delete Records")}</button>
                     <button class="btn btn-ghost" data-act="no">${L("취소", "Cancel")}</button>
@@ -175,7 +177,7 @@ const App = {
         box.onclick = e => {
             const b = e.target.closest("[data-act]");
             if (!b) return;
-            if (b.dataset.act === "yes") { Store.clearRecords(); this.renderMenu(); }
+            if (b.dataset.act === "yes") { Store.clearRecords(); Shop.reset(); this.renderMenu(); }
             this.closeModal();
         };
     },
@@ -190,6 +192,10 @@ const App = {
                     <li><b>🎯 CASTING / ⚓ JIGGING</b> 낚시 방법을 고르세요.</li>
                     <li><b>🎒 장비 3개</b> 낚시대 → 릴 → 루어. 모르겠으면 <b>⭐ 추천 장비로 시작</b>!</li>
                 </ol>
+                <h4>💰 골드 · 장비 구매</h4>
+                <p>잡은 물고기는 <b>무게 × 어종 가격</b>으로 자동 판매돼 골드가 쌓여요. 대물 등급일수록, 난이도가 높을수록 비싸게 팔려요.
+                <b>신기록</b>을 깨면 판매가 <b>×2</b>, 어종별 <b>🥉브론즈 → 🥈실버 → 🥇골드 → 👑레전드</b> 메달을 처음 받으면 보너스 골드!
+                모은 골드로 <b>🎒 장비</b> 메뉴에서 더 강한 낚시대 · 릴을 사세요. (게임 전용 골드 · 실제 돈과 무관)</p>
                 <h4>🎚 난이도 하 · 중 · 상</h4>
                 <p>메인 메뉴에서 고를 수 있어요. <b>상</b>은 텐션이 금방 차오르고, 물고기가 더 오래 버티고, 입질도 적지만 <b>대물 확률이 올라가요</b>.</p>
                 <h4>📳 손맛</h4>
@@ -219,6 +225,10 @@ const App = {
                     <li><b>🎯 CASTING / ⚓ JIGGING</b> Pick a fishing method.</li>
                     <li><b>🎒 3 pieces of gear</b> Rod → Reel → Lure. Not sure? Use <b>⭐ Start with Recommended Gear</b>!</li>
                 </ol>
+                <h4>💰 Gold · Buying Gear</h4>
+                <p>Every fish you land is sold automatically for <b>weight × species price</b>. Bigger grades and harder difficulty pay more.
+                Break a <b>personal record</b> for <b>×2</b>, and earn bonus gold the first time you get each species medal: <b>🥉Bronze → 🥈Silver → 🥇Gold → 👑Legend</b>.
+                Spend gold on stronger rods and reels in the <b>🎒 Gear</b> menu. (Game-only gold · not real money)</p>
                 <h4>🎚 Difficulty EASY · NORMAL · HARD</h4>
                 <p>Choose it in the main menu. On <b>HARD</b> tension builds fast, fish fight longer and bite less, but <b>trophy chances go up</b>.</p>
                 <h4>📳 Feel the fight</h4>
@@ -324,7 +334,7 @@ const App = {
     renderGear() {
         const st = Game.state;
         const { fish, method } = st;
-        U.$("#gear-info").innerHTML = `${U.escape(I18N.name(st.region))} · <b>${U.escape(I18N.name(fish))}</b> · ${U.methodIcon(method)} ${U.methodLabel(method)} · <span class="badge badge-diff diff-${Game.difficultyId()}">${L("난이도", "Level")} ${Game.difficultyLabel()}</span>`;
+        U.$("#gear-info").innerHTML = `${U.escape(I18N.name(st.region))} · <b>${U.escape(I18N.name(fish))}</b> · ${U.methodIcon(method)} ${U.methodLabel(method)} · <span class="badge badge-diff diff-${Game.difficultyId()}">${L("난이도", "Level")} ${Game.difficultyLabel()}</span> · <span class="gold-txt">💰 ${Shop.fmt(Shop.gold())}</span>`;
         const steps = [["rod", L("1. 낚시대", "1. Rod")], ["reel", L("2. 릴", "2. Reel")], ["lure", L("3. 루어", "3. Lure")]];
         U.$("#gear-steps").innerHTML = steps.map(([k, label]) => `
             <button class="step ${this.gearStep === k ? "active" : ""} ${st[k] ? "done" : ""}" data-step="${k}">
@@ -357,7 +367,7 @@ const App = {
         grid.innerHTML = items.map(it => Equip.card(it, this.gearStep, {
             selectable: true, fishId: fish.id, selectedId: st[this.gearStep] && st[this.gearStep].id
         })).join("") || `<div class="empty">${L("선택할 수 있는 장비가 없어요. 데이터 파일을 확인하세요.", "No gear available. Please check the data files.")}</div>`;
-        Equip.bindList(grid, (kind, item) => this.pickGear(kind, item));
+        Equip.bindList(grid, (kind, item) => this.pickGear(kind, item), item => this.pickGear(item.category, item));
 
         const ready = st.rod && st.reel && st.lure;
         U.$("#btn-go-fishing").disabled = !ready;
@@ -399,6 +409,7 @@ const App = {
     /* ---------------- 장비 메뉴 (둘러보기) ---------------- */
     renderEquipment() {
         const tabs = [["rod-jigging", L("지깅 낚시대", "Jigging Rods")], ["rod-casting", L("파핑 낚시대", "Popping Rods")], ["reel", L("릴", "Reels")], ["lure-casting", L("루어 · CASTING", "Lures · CASTING")], ["lure-jigging", L("루어 · JIGGING", "Lures · JIGGING")]];
+        U.$("#equip-wallet").innerHTML = `💰 ${L("내 골드", "My gold")} <b>${Shop.fmt(Shop.gold())}</b> <span class="muted small">${L("· 물고기를 잡으면 자동 판매돼 골드가 쌓여요", "· Fish you land are sold automatically")}</span>`;
         U.$("#equip-tabs").innerHTML = tabs.map(([k, l]) => `<button class="chip-btn ${this.equipTab === k ? "active" : ""}" data-tab="${k}">${l}</button>`).join("");
         U.$("#equip-tabs").onclick = e => {
             const b = e.target.closest("[data-tab]");
@@ -414,16 +425,24 @@ const App = {
         else { kind = "lure"; items = Equip.luresFor(this.equipTab.split("-")[1]); }
         const grid = U.$("#equip-grid");
         grid.innerHTML = items.map(it => Equip.card(it, kind, {})).join("");
-        Equip.bindList(grid, null);
+        Equip.bindList(grid, null, () => this.renderEquipment());
     },
 
     /* ---------------- 결과 ---------------- */
-    showResult(c, isNew) {
+    showResult(c, isNew, shop) {
         const fish = Game.fishById(c.fishId);
+        const money = shop ? `
+                <div class="sale-box">
+                    ${shop.lines.map(l => `<div class="sale-row"><span>${U.escape(l.label)}</span><b>+${Shop.fmt(l.g)}</b></div>`).join("")}
+                    <div class="sale-row sale-total"><span>${L("합계", "Total")}</span><b>💰 +${Shop.fmt(shop.total)}</b></div>
+                    <div class="muted small">${L("내 골드", "My gold")} ${Shop.fmt(shop.wallet)}</div>
+                    ${this.nextGearHint()}
+                </div>` : "";
         const gi = Game.gradeIndex(c.grade);
         const box = this.openModal(`
             <div class="result grade-bg-${c.grade.toLowerCase()}">
-                ${isNew ? `<div class="new-record">🏆 NEW RECORD!</div>` : ""}
+                ${isNew ? `<div class="new-record">🏆 NEW RECORD!${shop && shop.record ? `<small>${L("최고 무게 · 최장 길이 갱신", "Heaviest · longest updated")}</small>` : ""}</div>` : ""}
+                ${shop && shop.medalUp ? `<div class="medal-up">${Shop.medalBadge(shop.medalUp, true)} ${L("메달 획득!", "medal!")}</div>` : ""}
                 <div class="grade big ${Records.gradeClass(c.grade)}">${U.escape(c.gradeLabel)}</div>
                 <div class="fish-pic big ${gi >= 3 ? "glow" : ""}">${U.fishSVG(fish)}</div>
                 <h3>${U.escape(I18N.name(fish))} ${I18N.en ? "" : `<small class="muted">${U.escape(fish.nameEn)}</small>`}</h3>
@@ -435,12 +454,14 @@ const App = {
                     <div class="muted small">${U.escape(Records.gearNameOf(c, "rod"))} / ${U.escape(Records.gearNameOf(c, "reel"))}</div>
                     ${c.difficulty ? `<div class="muted small">${L("난이도", "Level")} ${Game.difficultyLabel(c.difficulty)}</div>` : ""}
                 </div>
+                ${money}
                 <p class="ok small">${L("✓ 기록 저장 완료", "✓ Record saved")}</p>
                 <div class="detail-actions">
                     <button class="btn btn-primary btn-lg" data-act="again">${L("🎣 다시 낚시", "🎣 Fish Again")}</button>
                     <button class="btn btn-ghost" data-act="gear">${L("🎒 장비 바꾸기", "🎒 Change Gear")}</button>
                     <button class="btn btn-ghost" data-act="map">${L("🌎 지역 바꾸기", "🌎 Change Region")}</button>
                     <button class="btn btn-ghost" data-act="best">${L("🏆 나의 최대어", "🏆 My Best Catches")}</button>
+                    <button class="btn btn-gold" data-act="shop">${L("💰 장비 사러 가기", "💰 Shop Gear")}</button>
                 </div>
             </div>`, () => Fishing.newRound(false));
         this.bindResultButtons(box);
@@ -471,7 +492,23 @@ const App = {
             if (act === "gear") { this.gearStep = "rod"; this.openGear(); }
             if (act === "map") this.go("map");
             if (act === "best") this.go("best");
+            if (act === "shop") { this.gearStep = "rod"; this.openGear(); }
         };
+    },
+
+    /* 지금 낚시법에서 아직 못 산 가장 싼 낚시대/릴 → "OOO까지 얼마 남음" */
+    nextGearHint() {
+        const { method } = Game.state;
+        if (!method) return "";
+        const list = Game.D().rods.concat(Game.D().reels)
+            .filter(it => Equip.methodsOf(it).includes(method) && !Shop.isOwned(it))
+            .sort((a, b) => Shop.price(a) - Shop.price(b));
+        const next = list[0];
+        if (!next) return "";
+        const gap = Shop.price(next) - Shop.gold();
+        return `<div class="small next-gear">${gap <= 0
+            ? L(`🛒 <b>${U.escape(I18N.name(next))}</b> 구매 가능!`, `🛒 You can buy <b>${U.escape(I18N.name(next))}</b>!`)
+            : L(`🎯 <b>${U.escape(I18N.name(next))}</b>까지 ${Shop.fmt(gap)}`, `🎯 ${Shop.fmt(gap)} to <b>${U.escape(I18N.name(next))}</b>`)}</div>`;
     },
 
     /* ---------------- 모달 ---------------- */
