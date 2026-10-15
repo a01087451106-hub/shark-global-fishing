@@ -25,6 +25,7 @@ const Achieve = {
         { id: "regions_15", icon: "🌏", ko: "세계 정복자", en: "World Conqueror", desc: "지역 15곳에서 잡기", descEn: "Catch fish in 15 regions", gold: 200000, goal: 15, value: s => s.regions },
         { id: "gold_medal", icon: "🥇", ko: "금메달리스트", en: "Gold Medalist", desc: "골드 메달 1개 얻기", descEn: "Earn a GOLD medal", gold: 30000, goal: 1, value: s => s.goldMedals },
         { id: "legend", icon: "👑", ko: "레전드", en: "Legend", desc: "레전드 메달 1개 얻기", descEn: "Earn a LEGEND medal", gold: 150000, goal: 1, value: s => s.legends },
+        { id: "attend_7", icon: "📅", ko: "개근상", en: "Perfect Attendance", desc: "출석체크 7번 하기", descEn: "Check in on 7 days", gold: 30000, goal: 7, value: s => s.attend },
         { id: "gear_3", icon: "🎒", ko: "장비 마니아", en: "Gear Fanatic", desc: "장비 3개 구매", descEn: "Buy 3 pieces of gear", gold: 30000, goal: 3, value: s => s.bought },
         { id: "rich", icon: "💰", ko: "백만장자", en: "Millionaire", desc: "총 1,000,000 G 벌기", descEn: "Earn 1,000,000 G in total", gold: 100000, goal: 1000000, value: s => s.earned, unit: "G" }
     ],
@@ -50,6 +51,7 @@ const Achieve = {
             goldMedals: Object.values(medals).filter(v => v >= 3).length,
             legends: Object.values(medals).filter(v => v >= 4).length,
             bought: Shop.owned().length,
+            attend: Daily.state().total || 0,
             earned: list.reduce((a, r) => a + (r.gold || Shop.salePrice(r)), 0)
         };
     },

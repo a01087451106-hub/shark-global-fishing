@@ -172,6 +172,7 @@ const TrophyCard = {
                     ${canShareFile ? `<button class="btn btn-gold btn-lg" data-act="share">${L("📤 공유하기 (카톡 · 인스타)", "📤 Share")}</button>` : ""}
                     <button class="btn btn-primary" data-act="save">${L("💾 이미지 저장", "💾 Save Image")}</button>
                     ${inApp && (this.isKakao() || this.isAndroid()) ? `<button class="btn btn-ghost" data-act="external">${L("🌐 다른 브라우저로 열기", "🌐 Open in Browser")}</button>` : ""}
+                    <button class="btn btn-cafe" data-act="brag">${L("📣 지깅클럽에 자랑하기", "📣 Brag on Jigging Club")}</button>
                     <button class="btn btn-ghost" data-act="copy">${L("🔗 게임 링크 복사", "🔗 Copy Game Link")}</button>
                 </div>
                 <p class="muted small card-note">${canShareFile ? "" : L("이미지를 저장한 뒤 카카오톡 · 인스타그램에 올려보세요!", "Save the image and post it on Instagram or anywhere!")}</p>
@@ -211,6 +212,7 @@ const TrophyCard = {
                 note(L(`✓ <b>${fileName}</b> 저장했어요. 안 보이면 위 사진을 길게 눌러 저장하세요.`, `✓ Saved <b>${fileName}</b>. If not, press and hold the image to save it.`));
             }
             if (act === "external" && !this.openExternalBrowser()) note(L("오른쪽 위 메뉴에서 '다른 브라우저로 열기'를 눌러주세요", "Use the menu to open this page in your browser"));
+            if (act === "brag") return Daily.brag(rec);
             if (act === "copy") {
                 const text = this.shareText(rec) + " " + this.url();
                 try { await navigator.clipboard.writeText(text); App.toast(L("링크를 복사했어요!", "Link copied!")); }

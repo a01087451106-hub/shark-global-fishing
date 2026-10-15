@@ -14,7 +14,9 @@ const Store = {
         ECON_INIT: "sharkEconomyInit",
         ACHIEVE: "sharkAchievements",
         TITLE: "sharkTitle",
-        NAME: "sharkPlayerName"
+        NAME: "sharkPlayerName",
+        ATTEND: "sharkAttendance",
+        NEWS_SEEN: "sharkNewsSeen"
     },
 
     get(key, fallback) {

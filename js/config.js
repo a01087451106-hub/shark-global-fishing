@@ -70,6 +70,9 @@ const CONFIG = {
     /* 손맛(진동): 파이팅 중 휴대폰 진동 세기 배율 (0 이면 끔, 1 기본) */
     HAPTIC_STRENGTH: 1,
 
+    /* 📅 출석체크 보상 (1일차 ~ 7일차, 7일 지나면 다시 1일차부터) */
+    ATTEND_REWARDS: [3000, 5000, 8000, 10000, 15000, 20000, 50000],
+
     /* 골드 · 상점 (js/shop.js) - 게임 전용 골드, 실제 돈과 무관
        판매가 = 무게(kg) × FISH_PRICE_PER_KG × GRADE_MULT × DIFFICULTY_MULT */
     ECONOMY: {

@@ -283,6 +283,7 @@ SHARK_DATA.defaultGradeChance = { NORMAL: 65, GOOD: 22, BIG: 9, TROPHY: 3, MONST
 | `sharkLang` / `sharkCountry` | 직접 고른 언어 / 접속 국가 |
 | `sharkGold` / `sharkOwnedGear` / `sharkMedals` | 골드 / 구매한 장비 / 어종별 메달 |
 | `sharkAchievements` / `sharkTitle` / `sharkPlayerName` | 달성한 업적 / 착용 칭호 / 낚시꾼 이름 |
+| `sharkAttendance` / `sharkNewsSeen` | 출석체크 기록 / 마지막으로 본 업데이트 소식 |
 
 메인 메뉴의 **🗑 기록 초기화** 로 낚시 기록과 골드 · 구매 장비 · 메달을 지울 수 있습니다.
 
@@ -301,6 +302,8 @@ SHARK_DATA.defaultGradeChance = { NORMAL: 65, GOOD: 22, BIG: 9, TROPHY: 3, MONST
 
 - 업적 20개 (첫 참치, 30kg 클럽, 도감 마스터 등). 달성하면 보너스 골드 + 칭호
 - 업적 추가·수정은 `js/achieve.js` 맨 위 `LIST` 에서 한 줄씩
+- 📅 출석체크 보상은 `js/config.js` 의 `ATTEND_REWARDS` (7일 주기)
+- 🆕 업데이트 소식은 `data/news-data.js` 맨 위에 블록을 추가하면 다음 접속 때 자동으로 한 번 떠요
 - 인증샷 카드: 1080×1350 이미지. 휴대폰은 공유하기(카톡·인스타), PC는 이미지 저장 + 링크 복사
 
 ---

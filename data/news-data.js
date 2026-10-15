@@ -1,0 +1,48 @@
+/* =========================================================
+   🆕 업데이트 소식 (news-data.js)
+   ---------------------------------------------------------
+   ★ 새 업데이트를 알리려면 맨 위에 { ... } 블록 하나를 추가하세요.
+   - id    : 숫자. 새 소식일수록 크게 (게임에 들어오면 처음 한 번 자동으로 보여줌)
+   - date  : 날짜
+   - items : [아이콘, 제목, 설명, 영어 제목, 영어 설명]
+   ========================================================= */
+window.SHARK_DATA = window.SHARK_DATA || {};
+
+SHARK_DATA.news = [
+    {
+        id: 6, date: "2026.10.15",
+        items: [
+            ["📅", "출석체크", "매일 접속하면 골드를 드려요. 7일 연속이면 50,000G!", "Daily check-in", "Log in every day for gold. 7 days in a row = 50,000G!"],
+            ["📣", "지깅클럽에 자랑하기", "결과 화면과 인증샷 카드에서 지깅클럽(네이버 카페)으로 바로 자랑할 수 있어요.", "Brag on Jigging Club", "Share your catch on Jigging Club right from the result screen and trophy card."],
+            ["🆕", "업데이트 소식", "새로 바뀐 점을 이 창에서 알려드려요. 메뉴의 🆕 버튼으로 언제든 다시 볼 수 있어요.", "Update news", "See what's new here anytime with the 🆕 button in the menu."]
+        ]
+    },
+    {
+        id: 5, date: "2026.10.15",
+        items: [
+            ["💥", "라인 브레이크 현실화", "RUN이나 헤드쉐이크 때 계속 감으면 라인이 터져요! 난이도가 높을수록 더 빨리 손을 떼야 해요.", "Realistic line breaks", "Keep reeling during a RUN or head shake and the line snaps! Higher difficulty = faster reactions needed."],
+            ["📸", "인증샷 카드 저장 개선", "카카오톡 안에서는 카드 사진을 길게 눌러 저장할 수 있어요.", "Easier card saving", "In KakaoTalk, press and hold the card image to save it."]
+        ]
+    },
+    {
+        id: 4, date: "2026.10.15",
+        items: [
+            ["🎖", "업적 · 칭호 20종", "첫 참치, 30kg 클럽, 도감 마스터... 달성하면 보너스 골드와 칭호를 받아요.", "20 achievements & titles", "First Tuna, 30kg Club, Fish Guide Master... earn bonus gold and titles."],
+            ["📸", "트로피 인증샷 카드", "큰 고기를 잡으면 인증샷 카드를 만들어 카톡 · 인스타로 자랑하세요!", "Trophy card", "Make a trophy card of your big catch and share it!"]
+        ]
+    },
+    {
+        id: 3, date: "2026.10.15",
+        items: [
+            ["💰", "골드 · 장비 구매", "잡은 물고기를 팔아 골드를 모으고, 더 강한 낚시대 · 릴을 사세요.", "Gold & gear shop", "Sell your catch for gold and buy stronger rods and reels."],
+            ["🥇", "어종별 메달", "브론즈 → 실버 → 골드 → 레전드. 신기록이면 판매가 ×2!", "Species medals", "Bronze → Silver → Gold → Legend. New record = sale ×2!"]
+        ]
+    },
+    {
+        id: 2, date: "2026.10.15",
+        items: [
+            ["🎣", "손맛 연출 강화", "드랙이 차고 나갈 때 화면 떨림, 낚싯대 휘어짐, 헤드쉐이크 '쿵!', 랜딩 슬로우모션.", "Better fight feel", "Screen shake on runs, bending rod, head-shake thumps, slow-motion landing."],
+            ["🌊", "'보일링' 표기", "캐스팅의 '나부라'를 '보일링'으로 바꿨어요.", "'Boiling' wording", "Renamed surface boils to 'boiling' in Korean."]
+        ]
+    }
+];

@@ -96,12 +96,14 @@ const App = {
             Sound.landing();
             this.started = true;
             this.go("menu");
+            Daily.welcome(() => this.renderMenu());     // 출석체크 → 새 업데이트 소식
         });
     },
 
     /* ---------------- 메인 메뉴 ---------------- */
     initMenu() {
         U.$("#btn-help").addEventListener("click", () => { Sound.click(); this.openHelp(); });
+        U.$("#btn-news").addEventListener("click", () => { Sound.click(); Daily.openNews(false, () => this.renderMenu()); });
         U.$("#btn-sound").addEventListener("click", () => {
             Sound.unlock();
             Sound.setEnabled(!Sound.enabled);
@@ -164,6 +166,9 @@ const App = {
         this.renderDifficulty();
         U.$("#menu-total").textContent = total;
         U.$("#menu-gold").textContent = Shop.fmt(Shop.gold());
+        U.$("#btn-news").classList.toggle("has-new", Daily.hasNewNews());
+        const at = Daily.state();
+        U.$("#menu-attend").textContent = at.total ? L(`📅 ${at.streak}일 연속 출석`, `📅 ${at.streak}-day streak`) : "";
         const t = Achieve.title(), nm = Achieve.playerName();
         U.$("#menu-title").innerHTML = t || nm ? `${U.escape(t)} <b>${U.escape(nm || "ANGLER")}</b>` : "";
     },
@@ -485,6 +490,7 @@ const App = {
                     <button class="btn btn-ghost" data-act="map">${L("🌎 지역 바꾸기", "🌎 Change Region")}</button>
                     <button class="btn btn-ghost" data-act="best">${L("🏆 나의 최대어", "🏆 My Best Catches")}</button>
                     <button class="btn btn-gold" data-act="shop">${L("💰 장비 사러 가기", "💰 Shop Gear")}</button>
+                    <button class="btn btn-cafe" data-act="brag">${L("📣 지깅클럽에 자랑하기", "📣 Brag on Jigging Club")}</button>
                 </div>
             </div>`, () => Fishing.newRound(false));
         this.bindResultButtons(box, c);
@@ -511,6 +517,7 @@ const App = {
             Sound.click();
             const act = b.dataset.act;
             if (act === "card") return TrophyCard.open(rec, () => Fishing.newRound(false));
+            if (act === "brag") return Daily.brag(rec);
             this.closeModal(true);
             if (act === "again") Fishing.newRound(false);
             if (act === "gear") { this.gearStep = "rod"; this.openGear(); }
