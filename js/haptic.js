@@ -8,15 +8,17 @@
      · 히트 / 랜딩 / 라인 브레이크 : 각각 다른 패턴
    - PC에서 게임패드(진동 지원)를 연결하면 패드가 진동합니다.
    - 아이폰(iOS Safari)은 웹 진동을 지원하지 않아 진동이 나오지 않습니다.
-   - 세기는 js/config.js 의 HAPTIC_STRENGTH, 켜고 끄기는 메인 메뉴 버튼
+   - 세기는 js/config.js 의 HAPTIC_STRENGTH (항상 켜져 있음)
+   - 갤럭시 등 안드로이드 진동 모터는 너무 짧은 진동(20ms 미만)을 잘 못 느끼므로 최소 MIN_ON ms 로 맞춤
    ========================================================= */
 const Haptic = {
     enabled: true,
     wait: 0,
+    MIN_ON: 35,             // 한 번 진동의 최소 길이(ms)
 
     get supported() { return typeof navigator !== "undefined" && "vibrate" in navigator; },
 
-    init() { this.enabled = Store.isHapticOn(); },
+    init() { this.enabled = true; },        // 예전에 꺼둔 설정이 있어도 항상 켬
 
     setEnabled(on) {
         this.enabled = on;
@@ -28,7 +30,7 @@ const Haptic = {
     buzz(pattern, strong) {
         const k = CONFIG.HAPTIC_STRENGTH;
         if (!this.enabled || !k) return;
-        const p = (Array.isArray(pattern) ? pattern : [pattern]).map((v, i) => i % 2 ? v : Math.round(v * k));
+        const p = (Array.isArray(pattern) ? pattern : [pattern]).map((v, i) => i % 2 ? v : Math.max(this.MIN_ON, Math.round(v * k)));
         try { if (this.supported) navigator.vibrate(p); } catch (e) { }
         this.rumble(p.reduce((a, b) => a + b, 0), U.clamp((strong == null ? 0.6 : strong) * k, 0, 1));
     },
@@ -50,6 +52,9 @@ const Haptic = {
 
     /* ---------------- 이벤트별 패턴 ---------------- */
     hit(gi) { this.buzz(gi >= 3 ? [160, 50, 90, 40, 260] : gi >= 2 ? [130, 50, 160] : [120], gi >= 3 ? 1 : 0.8); this.wait = 0.9; },
+    /* 버튼을 누르는 순간 (터치에 바로 반응해야 진동을 허용하는 브라우저 대비) */
+    tap(ms) { this.buzz([ms || 30], 0.4); },
+
     landing() { this.buzz([30, 70, 30, 70, 30, 140, 220], 0.5); },
     fail(reason) {
         if (reason === "break") this.buzz([260, 60, 40], 1);   // 팅! 라인이 터지는 느낌
@@ -81,8 +86,8 @@ const Haptic = {
             this.buzz([Math.round(10 + s.tension * 0.3)], U.clamp(s.tension / 100, 0.2, 0.8));
             this.wait = 0.2 + s.tension / 400;
         } else {
-            this.buzz([8], 0.15);                                // 쉬는 중: 살아있는 물고기의 미세한 떨림
-            this.wait = U.rand(0.6, 1.1);
+            this.buzz([30], 0.15);                               // 쉬는 중: 살아있는 물고기의 미세한 떨림
+            this.wait = U.rand(1.0, 1.8);
         }
     }
 };

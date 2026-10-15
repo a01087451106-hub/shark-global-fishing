@@ -139,7 +139,7 @@ const Fishing = {
         list.forEach(b => {
             const el = box.querySelector(`[data-id="${b.id}"]`);
             if (b.hold) {
-                const on = e => { e.preventDefault(); Sound.unlock(); this.reeling = true; el.classList.add("pressed"); };
+                const on = e => { e.preventDefault(); Sound.unlock(); Haptic.tap(this.phase === "fight" ? 45 : 25); this.reeling = true; el.classList.add("pressed"); };
                 const off = () => { this.reeling = false; el.classList.remove("pressed"); };
                 el.addEventListener("pointerdown", on);
                 el.addEventListener("pointerup", off);
@@ -149,6 +149,7 @@ const Fishing = {
                 el.addEventListener("pointerdown", e => {
                     e.preventDefault();
                     Sound.unlock();
+                    Haptic.tap(25);
                     el.classList.add("pressed");
                     setTimeout(() => el.classList.remove("pressed"), 120);
                     this.action(b.id);

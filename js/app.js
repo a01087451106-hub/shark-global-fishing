@@ -39,7 +39,6 @@ const App = {
     /* 언어가 바뀌면 지금 보고 있는 화면을 다시 그림 */
     relocalize() {
         this.updateSoundBtn();
-        this.updateHapticBtn();
         switch (this.current) {
             case "menu": this.renderMenu(); break;
             case "map": this.openMap(); break;
@@ -96,6 +95,7 @@ const App = {
         U.$("#btn-start").addEventListener("click", () => {
             Sound.unlock();
             Sound.landing();
+            Haptic.buzz([60, 40, 120], 0.8);            // 시작 버튼을 누르는 순간 진동 (손맛 진동 확인)
             this.started = true;
             this.go("menu");
             Daily.welcome(() => this.renderMenu());     // 출석체크 → 새 업데이트 소식
@@ -113,12 +113,6 @@ const App = {
             Sound.click();
         });
         U.$("#btn-reset").addEventListener("click", () => { Sound.click(); this.confirmReset(); });
-        U.$("#btn-haptic").addEventListener("click", () => {
-            Sound.click();
-            Haptic.setEnabled(!Haptic.enabled);
-            this.updateHapticBtn();
-            if (Haptic.enabled) Haptic.buzz([60, 60, 60]);     // 켜면 바로 진동 확인
-        });
         U.$("#diff-select").addEventListener("click", e => {
             const b = e.target.closest("[data-diff]");
             if (!b) return;
@@ -128,11 +122,6 @@ const App = {
             this.renderDifficulty();
         });
         this.updateSoundBtn();
-        this.updateHapticBtn();
-    },
-
-    updateHapticBtn() {
-        U.$("#btn-haptic").textContent = Haptic.enabled ? L("📳 손맛 진동 ON", "📳 Vibration ON") : L("📴 손맛 진동 OFF", "📴 Vibration OFF");
     },
 
     /* 난이도 하 · 중 · 상 선택 (config.js 의 DIFFICULTY) */

@@ -10,6 +10,12 @@ window.SHARK_DATA = window.SHARK_DATA || {};
 
 SHARK_DATA.news = [
     {
+        id: 8, date: "2026.10.15",
+        items: [
+            ["📳", "손맛 진동 강화", "안드로이드 폰에서 진동이 항상 켜지고, 더 또렷하게 느껴지도록 바꿨어요. (아이폰은 웹 진동 미지원)", "Stronger vibration", "Vibration is now always on and stronger on Android phones. (Not supported on iPhone)"]
+        ]
+    },
+    {
         id: 7, date: "2026.10.15",
         items: [
             ["🔐", "로그인 · 기기끼리 이어하기", "오른쪽 위 '로그인'으로 가입하면 컴퓨터 · 핸드폰 어디서든 같은 기록으로 이어서 할 수 있어요.", "Log in & play anywhere", "Log in (top right) to keep the same progress on your computer and phone."],
