@@ -53,6 +53,7 @@ const Online = {
             auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }
         });
         this.hookStore();
+        this.showAuthError();
         U.$("#btn-login").onclick = () => { Sound.click(); this.user ? this.openAccount() : this.openLogin(); };
         this.db.auth.onAuthStateChange((event, session) => {
             if (event === "PASSWORD_RECOVERY") return this.openNewPassword();
@@ -65,6 +66,23 @@ const Online = {
         this.renderBtn();
         this.initFeed();
         document.addEventListener("visibilitychange", () => { if (document.visibilityState === "hidden") this.pushNow(); });
+    },
+
+    /* 카카오 로그인이 실패하고 돌아오면 주소에 error_description 이 붙어 옴 → 화면에 보여줌 */
+    showAuthError() {
+        const raw = (location.hash || "").replace(/^#/, "") + "&" + (location.search || "").replace(/^\?/, "");
+        const p = new URLSearchParams(raw);
+        const desc = p.get("error_description") || p.get("error");
+        if (!desc) return;
+        history.replaceState(null, "", location.pathname);
+        const code = p.get("error_code") || "";
+        setTimeout(() => App.openModal(`
+            <div class="detail center">
+                <h3>⚠️ ${L("로그인하지 못했어요", "Login failed")}</h3>
+                <p>${L("카카오 로그인 중 문제가 생겼어요. 아래 내용을 관리자에게 알려주세요.", "Something went wrong during login. Please share this with the admin.")}</p>
+                <p class="warn small" style="word-break:break-all">${U.escape(desc)}${code ? ` (${U.escape(code)})` : ""}</p>
+                <div class="detail-actions"><button class="btn btn-primary" onclick="App.closeModal()">${L("확인", "OK")}</button></div>
+            </div>`), 300);
     },
 
     /* 저장 항목이 바뀌면 → 잠시 뒤 서버에 올림 */
