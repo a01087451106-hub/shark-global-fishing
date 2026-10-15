@@ -75,7 +75,7 @@ const CONFIG = {
        비워두면 온라인 기능이 숨겨지고 예전처럼 이 기기에만 저장돼요. */
     SUPABASE_URL: "https://dbtxvbvzijhyrflqvqpa.supabase.co",
     SUPABASE_ANON_KEY: "sb_publishable_8SzhmJKsrkls4vfbeVN8rw_xH6rx3r-",
-    KAKAO_LOGIN: false,             // Supabase 에 카카오 로그인 설정을 마치면 true
+    KAKAO_LOGIN: true,              // 카카오 로그인 사용 (Supabase · 카카오 디벨로퍼스 설정 완료)
 
     /* 📅 출석체크 보상 (1일차 ~ 7일차, 7일 지나면 다시 1일차부터) */
     ATTEND_REWARDS: [3000, 5000, 8000, 10000, 15000, 20000, 50000],

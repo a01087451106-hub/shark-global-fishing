@@ -10,6 +10,12 @@ window.SHARK_DATA = window.SHARK_DATA || {};
 
 SHARK_DATA.news = [
     {
+        id: 10, date: "2026.10.16",
+        items: [
+            ["💬", "카카오로 시작하기", "이제 카카오 계정으로 한 번에 로그인할 수 있어요!", "Log in with Kakao", "You can now log in with your Kakao account in one tap!"]
+        ]
+    },
+    {
         id: 9, date: "2026.10.15",
         items: [
             ["📡", "실시간 바다 날씨", "지역마다 지금 실제 날씨 · 바람 · 파고 · 수온이 입질에 반영돼요. 비 오는 날은 입질 활발, 풍랑엔 입질 ↓ 대물 ↑!", "Live sea weather", "Real weather, wind, waves and water temperature now affect bites in every region."],
