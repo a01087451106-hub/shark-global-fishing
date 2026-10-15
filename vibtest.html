@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>진동 테스트 · SHARK GLOBAL FISHING</title>
+<style>
+    body { margin: 0; padding: 20px 16px; background: #06111f; color: #eef4fa; font-family: "Malgun Gothic", system-ui, sans-serif; }
+    h1 { font-size: 1.3rem; }
+    button { display: block; width: 100%; margin: 10px 0; padding: 18px; font-size: 1.1rem; font-weight: 800; border: 0; border-radius: 14px; background: #f2c94c; color: #2a1a00; }
+    button.alt { background: #1d3a5c; color: #fff; }
+    #log { white-space: pre-wrap; background: #0c2238; border-radius: 12px; padding: 12px; font-size: 0.85rem; line-height: 1.6; }
+    p { color: #9fb3c8; font-size: 0.9rem; }
+</style>
+</head>
+<body>
+<h1>📳 진동 테스트</h1>
+<p>아래 버튼을 하나씩 눌러보고, 폰이 떨리는지 확인해 주세요. 그리고 맨 아래 회색 칸의 글자를 그대로 복사해서 보내주세요.</p>
+<button id="b1">① 짧게 (0.5초)</button>
+<button id="b2">② 길게 (1.5초)</button>
+<button id="b3" class="alt">③ 게임처럼 (지이익 패턴)</button>
+<div id="log"></div>
+<script>
+    const log = t => { document.getElementById("log").textContent += t + "\n"; };
+    const ua = navigator.userAgent;
+    const browser = /KAKAOTALK/i.test(ua) ? "카카오톡 안 브라우저" : /SamsungBrowser/i.test(ua) ? "삼성 인터넷" : /NAVER/i.test(ua) ? "네이버 앱" : /; wv\)/.test(ua) ? "앱 안 브라우저(WebView)" : /Chrome/i.test(ua) ? "크롬" : "기타";
+    log("브라우저: " + browser);
+    log("진동 기능 있음: " + ("vibrate" in navigator ? "예" : "아니오"));
+    const run = (name, p) => {
+        let r;
+        try { r = navigator.vibrate(p); } catch (e) { r = "오류 " + e.message; }
+        const act = navigator.userActivation ? (navigator.userActivation.isActive ? "터치 직후" : "터치 아님") : "-";
+        log(name + " → 결과: " + r + " (" + act + ")");
+    };
+    document.getElementById("b1").onclick = () => run("①", 500);
+    document.getElementById("b2").onclick = () => run("②", 1500);
+    document.getElementById("b3").onclick = () => run("③", [40, 25, 40, 25, 40, 25, 40, 25, 40]);
+    log("UA: " + ua);
+</script>
+</body>
+</html>
