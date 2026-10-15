@@ -133,33 +133,55 @@ const TrophyCard = {
 
     url() { return "https://" + this.SITE + "/"; },
 
+    /* 카카오톡 · 인스타 · 네이버 등 앱 안의 브라우저 (파일 다운로드가 안 되는 경우가 많음) */
+    inApp() { return /KAKAOTALK|Instagram|NAVER|FBAN|FBAV|Line\/|DaumApps|everytimeApp|; wv\)/i.test(navigator.userAgent); },
+    isKakao() { return /KAKAOTALK/i.test(navigator.userAgent); },
+    isIOS() { return /iPhone|iPad|iPod/i.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1); },
+    isAndroid() { return /Android/i.test(navigator.userAgent); },
+
+    /* 앱 안의 브라우저 → 휴대폰 기본 브라우저로 게임 열기 */
+    openExternalBrowser() {
+        const url = location.href;
+        if (this.isKakao()) { location.href = "kakaotalk://web/openExternal?url=" + encodeURIComponent(url); return true; }
+        if (this.isAndroid()) {
+            location.href = "intent://" + url.replace(/^https?:\/\//, "") + "#Intent;scheme=https;package=com.android.chrome;end";
+            return true;
+        }
+        return false;
+    },
+
     /* 카드 미리보기 + 공유/저장 */
     async open(rec, onClose) {
         const box = App.openModal(`<div class="detail center card-modal"><p class="muted">${L("인증샷 카드를 만드는 중...", "Making your trophy card...")}</p></div>`, onClose);
         const cv = await this.render(rec);
+        const dataUrl = cv.toDataURL("image/png");
         const blob = await new Promise(r => cv.toBlob(r, "image/png"));
         const fileName = `shark-trophy-${rec.fishId}-${Math.round(rec.length)}cm.png`;
         const file = typeof File !== "undefined" && blob ? new File([blob], fileName, { type: "image/png" }) : null;
         const canShareFile = !!(file && navigator.canShare && navigator.canShare({ files: [file] }));
-        const imgUrl = blob ? URL.createObjectURL(blob) : cv.toDataURL("image/png");
+        const inApp = this.inApp();
+        const pressHint = L("👆 위 사진을 <b>길게 눌러서</b> '이미지 저장'을 누르세요", "👆 <b>Press and hold</b> the image above, then choose 'Save image'");
         box.innerHTML = `
             <div class="detail center card-modal">
                 <h3>📸 ${L("인증샷 카드", "Trophy Card")}</h3>
-                <img class="card-preview" src="${imgUrl}" alt="trophy card">
+                <img class="card-preview" src="${dataUrl}" alt="SHARK GLOBAL FISHING trophy card">
+                ${inApp ? `<p class="card-hint">${pressHint}</p>` : ""}
                 <label class="ach-name">${L("낚시꾼 이름", "Angler name")}
                     <input id="card-name" maxlength="16" placeholder="ANGLER" value="${U.escape(Achieve.playerName())}"></label>
                 <div class="detail-actions">
                     ${canShareFile ? `<button class="btn btn-gold btn-lg" data-act="share">${L("📤 공유하기 (카톡 · 인스타)", "📤 Share")}</button>` : ""}
-                    <a class="btn btn-primary" data-act="save" href="${imgUrl}" download="${fileName}">${L("💾 이미지 저장", "💾 Save Image")}</a>
+                    <button class="btn btn-primary" data-act="save">${L("💾 이미지 저장", "💾 Save Image")}</button>
+                    ${inApp && (this.isKakao() || this.isAndroid()) ? `<button class="btn btn-ghost" data-act="external">${L("🌐 다른 브라우저로 열기", "🌐 Open in Browser")}</button>` : ""}
                     <button class="btn btn-ghost" data-act="copy">${L("🔗 게임 링크 복사", "🔗 Copy Game Link")}</button>
                 </div>
-                <p class="muted small">${canShareFile ? "" : L("이미지를 저장한 뒤 카카오톡 · 인스타그램에 올려보세요!", "Save the image and post it on Instagram or anywhere!")}</p>
+                <p class="muted small card-note">${canShareFile ? "" : L("이미지를 저장한 뒤 카카오톡 · 인스타그램에 올려보세요!", "Save the image and post it on Instagram or anywhere!")}</p>
             </div>`;
         const nameInput = box.querySelector("#card-name");
         nameInput.onchange = () => {
             Achieve.setPlayerName(nameInput.value);
             this.open(rec, onClose);             // 이름을 바꾸면 카드 다시 그림
         };
+        const note = html => { const el = box.querySelector(".card-note"); if (el) el.innerHTML = html; };
         box.onclick = async e => {
             const b = e.target.closest("[data-act]");
             if (!b) return;
@@ -168,6 +190,27 @@ const TrophyCard = {
             if (act === "share") {
                 try { await navigator.share({ files: [file], title: "SHARK GLOBAL FISHING", text: this.shareText(rec) + " " + this.url() }); } catch (err) { }
             }
+            if (act === "save") {
+                /* 앱 안 브라우저: 다운로드가 깨지므로 길게 눌러 저장 안내 */
+                if (inApp) {
+                    note(pressHint + (this.isIOS() ? L("<br>또는 오른쪽 아래 <b>···</b> → <b>Safari로 열기</b> 후 저장하세요", "<br>Or tap <b>···</b> → <b>Open in Safari</b> and save there") : ""));
+                    box.querySelector(".card-preview").scrollIntoView({ behavior: "smooth", block: "center" });
+                    return;
+                }
+                /* 아이폰: 공유 시트의 '이미지 저장'이 사진첩에 바로 저장됨 */
+                if (this.isIOS() && canShareFile) {
+                    try { await navigator.share({ files: [file] }); return; } catch (err) { if (err && err.name === "AbortError") return; }
+                }
+                const a = document.createElement("a");
+                a.href = blob ? URL.createObjectURL(blob) : dataUrl;
+                a.download = fileName;
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                if (blob) setTimeout(() => URL.revokeObjectURL(a.href), 10000);
+                note(L(`✓ <b>${fileName}</b> 저장했어요. 안 보이면 위 사진을 길게 눌러 저장하세요.`, `✓ Saved <b>${fileName}</b>. If not, press and hold the image to save it.`));
+            }
+            if (act === "external" && !this.openExternalBrowser()) note(L("오른쪽 위 메뉴에서 '다른 브라우저로 열기'를 눌러주세요", "Use the menu to open this page in your browser"));
             if (act === "copy") {
                 const text = this.shareText(rec) + " " + this.url();
                 try { await navigator.clipboard.writeText(text); App.toast(L("링크를 복사했어요!", "Link copied!")); }
