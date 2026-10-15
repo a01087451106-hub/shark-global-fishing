@@ -10,6 +10,14 @@ window.SHARK_DATA = window.SHARK_DATA || {};
 
 SHARK_DATA.news = [
     {
+        id: 7, date: "2026.10.15",
+        items: [
+            ["🔐", "로그인 · 기기끼리 이어하기", "오른쪽 위 '로그인'으로 가입하면 컴퓨터 · 핸드폰 어디서든 같은 기록으로 이어서 할 수 있어요.", "Log in & play anywhere", "Log in (top right) to keep the same progress on your computer and phone."],
+            ["🏅", "어종별 랭킹", "로그인한 뒤 잡은 물고기는 어종별 최대어 랭킹에 올라가요. 1등에 도전하세요!", "Species rankings", "Fish you catch while logged in go on the species leaderboard. Go for #1!"],
+            ["📡", "실시간 대물 소식", "누군가 BIG 이상 대물을 잡으면 화면 아래에 바로 소식이 떠요.", "Live big-catch news", "When anyone lands a BIG or better, it shows up at the bottom of the screen."]
+        ]
+    },
+    {
         id: 6, date: "2026.10.15",
         items: [
             ["📅", "출석체크", "매일 접속하면 골드를 드려요. 7일 연속이면 50,000G!", "Daily check-in", "Log in every day for gold. 7 days in a row = 50,000G!"],

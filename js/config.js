@@ -73,8 +73,8 @@ const CONFIG = {
     /* ☁️ 온라인 (로그인 · 저장 · 랭킹) - Supabase 프로젝트 설정 → API 에서 복사
        anon key 는 공개용 키라서 여기에 넣어도 괜찮아요 (service_role 키는 절대 넣지 마세요!)
        비워두면 온라인 기능이 숨겨지고 예전처럼 이 기기에만 저장돼요. */
-    SUPABASE_URL: "",
-    SUPABASE_ANON_KEY: "",
+    SUPABASE_URL: "https://dbtxvbvzijhyrflqvqpa.supabase.co",
+    SUPABASE_ANON_KEY: "sb_publishable_8SzhmJKsrkls4vfbeVN8rw_xH6rx3r-",
     KAKAO_LOGIN: false,             // Supabase 에 카카오 로그인 설정을 마치면 true
 
     /* 📅 출석체크 보상 (1일차 ~ 7일차, 7일 지나면 다시 1일차부터) */
