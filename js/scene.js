@@ -452,8 +452,15 @@ const Scene = {
         const hx = bp.x + 30, hy = bp.y - 46;          // 손 위치
         const butt = { x: hx - 10, y: hy + 12 };
         let bend = 0.15;
-        if (F.phase === "fight" && Battle.s) bend = 0.2 + Battle.s.tension / 110;
-        if (F.phase === "hit") bend = 1;
+        if (F.phase === "fight" && Battle.s) {
+            const b = Battle.s;
+            bend = 0.2 + b.tension / 110;
+            if (Battle.running) bend += 0.3 + U.clamp(b.ratio || 0.5, 0.2, 2) * 0.25;   // 드랙 질주: 활처럼 휨
+            else if (b.mode === "shake") bend += b.shakePulse * 0.4;
+            bend = Math.min(1.6, bend);
+        }
+        if (F.phase === "hit") bend = 1.3;
+        if (F.phase === "landing") bend = F.landSplash ? 0.5 : 1.3;
         const cp = { x: butt.x + (tip.x - butt.x) * 0.45 + bend * 6, y: Math.min(butt.y, tip.y) - 30 + bend * 10 };
         /* 손에서 블랭크까지 가늘어지는 낚싯대 */
         const N = 14;

@@ -136,6 +136,23 @@ const Sound = {
     },
 
     splash() { this.burst(0.35, 900, 0.8, 0.35); },
+
+    /* 헤드쉐이크 "쿵!" - 헤드폰/스피커로 몸까지 울리는 저음 */
+    thump(k) {
+        if (!this.ctx) return;
+        k = k == null ? 0.7 : k;
+        this.tone(68, 0.22, "sine", 0.55 * k, 34);
+        this.tone(120, 0.08, "triangle", 0.18 * k, 60);
+        this.burst(0.06, 300, 0.8, 0.15 * k);
+    },
+
+    /* 랜딩 "철썩!" */
+    splashBig() {
+        if (!this.ctx) return;
+        this.tone(90, 0.35, "sine", 0.5, 40);
+        this.burst(0.8, 500, 0.5, 0.6);
+        this.burst(0.3, 2400, 0.9, 0.22);
+    },
     jerk() { this.tone(300, 0.08, "triangle", 0.12, 180); this.burst(0.08, 2500, 2, 0.08); },
     click() { this.tone(900, 0.05, "sine", 0.12); },
 

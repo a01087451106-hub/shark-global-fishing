@@ -108,3 +108,7 @@
 @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; }
 }
+
+/* 랜딩 슬로우모션: 순간이 멈춘 듯 선명하게 */
+.stage.slowmo #sea-canvas { filter: saturate(1.35) contrast(1.12) brightness(1.05); transition: filter 0.15s; }
+#sea-canvas { transition: filter 0.3s; }

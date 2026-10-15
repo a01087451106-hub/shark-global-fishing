@@ -9,6 +9,9 @@ const Fishing = {
     phase: "ready",
     reeling: false,
     fishImgCache: {},
+    quake: 0,           // 화면 흔들림 세기(px) - 키보드/PC에서도 손맛이 느껴지도록
+    slowT: 0,           // 랜딩 슬로우모션 남은 시간(초)
+    reduceMotion: typeof matchMedia !== "undefined" && matchMedia("(prefers-reduced-motion: reduce)").matches,
 
     init() {
         this.canvas = document.getElementById("sea-canvas");
@@ -44,6 +47,9 @@ const Fishing = {
         Sound.stopAll();
         Haptic.stop();
         this.reeling = false;
+        this.quake = 0;
+        this.slowT = 0;
+        U.$("#stage").classList.remove("slowmo");
     },
 
     resize() {
@@ -373,6 +379,8 @@ const Fishing = {
         this.reeling = false;
         this.setControls([]);
         const gi = Game.gradeIndex(c.grade);
+        this.gi = gi;
+        this.bump(gi >= 3 ? 14 : 8);
         let text = "HIT!";
         if (c.isTuna && gi >= 3) text = "MONSTER TUNA HIT!";
         else if (c.isTuna && gi >= 2) text = "BIG TUNA HIT!";
@@ -405,6 +413,7 @@ const Fishing = {
         const res = Battle.update(dt, this.reeling);
         const s = Battle.s;
         Haptic.fight(dt, s, this.reeling);                      // 손맛 (진동)
+        this.fightFeel(s);                                      // 손맛 (화면 흔들림 · 저음)
         U.$("#fh-tension").style.width = U.clamp(s.tension, 0, 100) + "%";
         U.$("#fh-tension").className = s.tension > 88 ? "danger" : s.tension > 65 ? "warn" : "";
         U.$("#fh-stamina").style.width = s.stamina + "%";
@@ -422,14 +431,45 @@ const Fishing = {
         else if (res !== "fight") this.fail(res);
     },
 
+    /* 키보드로 해도 손맛이 느껴지도록: 물고기 힘에 맞춰 화면이 떨리고, 헤드쉐이크마다 "쿵!" */
+    fightFeel(s) {
+        const size = 0.7 + (this.gi || 0) * 0.25;               // 큰 물고기일수록 세게
+        const ratio = U.clamp(s.ratio || 0.5, 0.2, 2);
+        if (s.mode === "run" || s.mode === "final") this.bump((1.2 + ratio * 2.2) * size * (s.mode === "final" ? 1.4 : 1));
+        else if (this.reeling) this.bump(s.tension / 70 * size);
+        if (s.shakePulse > 0.8 && !this._shakeUp) {
+            this._shakeUp = true;
+            this.bump((6 + ratio * 4) * size);
+            Sound.thump(U.clamp(0.5 + ratio * 0.3, 0.4, 1));
+        } else if (s.shakePulse < 0.3) this._shakeUp = false;
+    },
+
+    /* 화면 흔들림 추가 (더 큰 값만 반영, 매 프레임 줄어듦) */
+    bump(px) { this.quake = Math.max(this.quake, px); },
+
     startLanding() {
         this.phase = "landing";
         this.landT = 0;
+        this.landSplash = false;
         Battle.stop();
         this.reeling = false;
         this.setControls([]);
         U.$("#fight-hud").classList.remove("show");
+        this.msg(L("끌어올려요...!", "Lifting it up...!"), "good");
+        /* 랜딩 순간: 잠깐 슬로우모션 → "철썩!" */
+        this.slowT = 0.6;
+        U.$("#stage").classList.add("slowmo");
+    },
+
+    landingSplash() {
+        this.landSplash = true;
+        U.$("#stage").classList.remove("slowmo");
+        const p = this.fishPos();
+        this.splash(p.x, this.surfaceY, 40);
+        this.shake("shake-strong");
+        this.bump(16);
         this.bigText("LANDING!", "");
+        Sound.splashBig();
         Sound.landing();
         Haptic.landing();
         this.msg(L("랜딩 성공!", "Landed!"), "good");
@@ -462,8 +502,10 @@ const Fishing = {
     /* ---------------- 메인 루프 ---------------- */
     loop(ts) {
         if (!this.active) return;
-        const dt = Math.min(0.05, (ts - this.last) / 1000);
+        let dt = Math.min(0.05, (ts - this.last) / 1000);
         this.last = ts;
+        this.quake = Math.max(0, this.quake - this.quake * Math.min(1, dt * 9) - dt * 2);
+        if (this.slowT > 0) { this.slowT -= dt; dt *= 0.18; }   // 랜딩 슬로우모션
         this.t += dt;
         this.update(dt);
         this.draw();
@@ -532,12 +574,13 @@ const Fishing = {
                 this.updateFight(dt);
                 break;
             case "landing":
+                if (!this.landSplash && this.slowT <= 0) this.landingSplash();
                 this.landT += dt;
                 if (Math.random() < dt * 20) {
                     const p = this.fishPos();
                     this.splash(p.x, this.surfaceY, 2);
                 }
-                if (this.landT > 1.8) this.finishLanding();
+                if (this.landT > 1.8 && this.landSplash) this.finishLanding();
                 break;
         }
 
@@ -591,12 +634,16 @@ const Fishing = {
         const s = Battle.s;
         if (this.phase === "fight" && s) {
             bend = s.tension / 100;
-            /* 손맛: 질주할 때는 잘게, 헤드쉐이크 때는 크게 낚싯대 끝이 떨림 */
-            if (s.mode === "run" || s.mode === "final") jit = 1 + (s.ratio || 0.5) * 1.6;
-            else if (s.mode === "shake") jit = s.shakePulse * 5;
-            else jit = s.tension / 80;
+            /* 손맛: 질주할 때는 활처럼 휘며 잘게, 헤드쉐이크 때는 크게 "툭툭" 떨림 */
+            if (s.mode === "run" || s.mode === "final") {
+                bend += 0.25 + U.clamp(s.ratio || 0.5, 0.2, 2) * 0.25;
+                jit = 2 + (s.ratio || 0.5) * 2.6;
+            } else if (s.mode === "shake") { bend += s.shakePulse * 0.35; jit = s.shakePulse * 8; }
+            else jit = s.tension / 70;
+            bend = Math.min(1.5, bend);
         }
-        if (this.phase === "hit") { bend = 0.8; jit = 3; }
+        if (this.phase === "hit") { bend = 1.1; jit = 5; }
+        if (this.phase === "landing") { bend = this.landSplash ? 0.5 : 1.2; jit = this.landSplash ? 0 : 2; }
         const bx = this.boatX;
         return {
             x: bx + 70 - bend * 18 + Math.sin(this.t * 53) * jit,
@@ -646,7 +693,20 @@ const Fishing = {
     },
 
     /* ---------------- 그리기 (사실적인 렌더링은 js/scene.js) ---------------- */
-    draw() { Scene.draw(this); },
+    draw() {
+        const q = this.quake * (this.reduceMotion ? 0.25 : 1);
+        if (q < 0.3) { Scene.draw(this); return; }
+        /* 흔들어도 가장자리가 비지 않게 살짝 확대해서 그림 */
+        const c = this.ctx, W = this.W, H = this.H;
+        const z = 1 + (q * 2 + 2) / Math.min(W, H);
+        c.save();
+        c.translate(W / 2 + U.rand(-q, q), H / 2 + U.rand(-q, q) * 0.7);
+        c.rotate(U.rand(-q, q) * 0.0012);
+        c.scale(z, z);
+        c.translate(-W / 2, -H / 2);
+        Scene.draw(this);
+        c.restore();
+    },
 
     /* 물보라 + 수면 거품 고리 */
     splash(x, y, n) {
