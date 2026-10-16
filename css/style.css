@@ -692,3 +692,5 @@ body[data-screen="title"] .catch-feed, body[data-screen="fishing"] .catch-feed {
 .sea-fx span.up { color: var(--green); }
 .sea-fx span.down { color: #ff8a7a; }
 .hud-sea { width: 100%; font-size: 0.75rem; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tide-note b { color: var(--gold); }
+.tide-note .feeding { color: var(--green); }

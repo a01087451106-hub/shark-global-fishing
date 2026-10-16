@@ -55,7 +55,7 @@ const Weather = {
         const n = name === "조금" ? 0.3 : name === "무시" ? 0.6 : parseInt(name, 10);
         const strength = Math.max(0.12, Math.sin(Math.PI * n / 14));        // 7물 무렵 가장 셈, 조금 · 무시 약함
         const korea = region && region.area === "korea";
-        const kind = strength > 0.85 ? L("사리", "Spring tide") : strength < 0.3 ? L("조금", "Neap tide") : L("중물", "Mid tide");
+        const kind = strength > 0.95 ? L("사리", "Spring tide") : strength < 0.3 ? L("조금", "Neap tide") : L("중물", "Mid tide");
         return {
             lunarDay: ld, name, strength, kind,
             label: korea ? `🌙 ${name} (${kind})` : `🌙 ${kind}`,

@@ -147,6 +147,7 @@ const App = {
         const notes = [];
         const tunaMonths = I18N.months(Game.D().koreaTunaSeason.months, "·");
         notes.push(`<span>📅 ${I18N.month(m)}</span>`);
+        notes.push(this.tideNote());
         notes.push(tunaOn
             ? `<span class="badge badge-tuna">TUNA SEASON</span> ${L("대한민국 동해 · 남해 · 제주 참치 출현 확률 UP!", "Tuna chance UP in Korea's East Sea · South Sea · Jeju!")}`
             : `<span>${L(`대한민국 SUMMER TUNA FIELD는 ${tunaMonths} 시즌`, `Korea SUMMER TUNA FIELD season: ${tunaMonths}`)}</span>`);
@@ -174,6 +175,22 @@ const App = {
         wrap.appendChild(el);
         setTimeout(() => el.classList.add("out"), 2600);
         setTimeout(() => el.remove(), 3100);
+    },
+
+    /* 🌙 오늘 물때 (한국: 동해 · 남해 · 제주 8물때식 / 서해 7물때식) + 다음 사리 + 피딩타임 */
+    tideNote() {
+        const east = { id: "namhae", area: "korea" }, west = { id: "seohae", area: "korea" };
+        const now = Date.now(), te = Weather.tide(east, now), tw = Weather.tide(west, now);
+        let next = "";
+        if (te.name !== "7물") {
+            for (let d = 1; d <= 15; d++) {
+                const t = Weather.tide(east, now + d * 86400000);
+                if (t.name === "7물") { const dt = new Date(now + d * 86400000); next = L(` · 다음 사리 ${dt.getMonth() + 1}/${dt.getDate()}(${t.name})`, ` · next spring tide ${dt.getMonth() + 1}/${dt.getDate()}`); break; }
+            }
+        }
+        const kst = (new Date().getUTCHours() + 9) % 24;
+        const feeding = (kst >= 5 && kst < 8) || (kst >= 17 && kst < 20);
+        return `<span class="tide-note">🌙 ${L("오늘 물때", "Today's tide")} · ${L("동해·남해·제주", "East·South·Jeju")} <b>${te.name}</b> (${te.kind}) · ${L("서해", "West")} <b>${tw.name}</b>${next}${feeding ? ` · <b class="feeding">🌅 ${L("지금 피딩타임!", "Feeding time now!")}</b>` : ""}</span>`;
     },
 
     confirmReset() {
