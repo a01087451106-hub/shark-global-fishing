@@ -245,6 +245,7 @@ const App = {
                 <h4>⌨ PC 단축키</h4>
                 <p>지깅: <b>Space/↓</b> DROP · <b>J</b> JERK · <b>R/↑</b> REEL<br>캐스팅: <b>Space</b> CAST · STOP · REEL(누르고 있기) · <b>J</b> ACTION<br>파이팅: <b>Space</b> 누르고 있기</p>
                 <p class="muted small">PE 라인 · 쇼크리더 · 훅 · 스플릿링은 게임이 자동으로 세팅해요.</p>
+                <p>📖 규칙 · 점수 계산 · 대물 공략을 더 자세히 보고 싶다면 <a href="${CONFIG.GAME_GUIDE_URL}" target="_blank" rel="noopener noreferrer"><b>게임 가이드</b></a>를 읽어 보세요.</p>
             </div>`);
     },
 

@@ -9,6 +9,7 @@ const CONFIG = {
     JIGGING_MALL_URL: "https://www.jiggingmall.com/",
     NAVER_CAFE_URL: "https://cafe.naver.com/jiggingclub1",
     YOUTUBE_URL: "https://www.youtube.com/@shark_SHIN",
+    GAME_GUIDE_URL: "https://sharkfish7.com/blog.html?board=game",   // 홈페이지 게임 가이드 (규칙 · 점수 · 공략)
 
     /* 지깅몰 낚시대 카테고리 (상품 상세 주소가 없는 낚시대는 여기로 이동) */
     JIGGING_ROD_CATEGORY_URL: "https://www.jiggingmall.com/goods/goods_list.php?cateCd=002007",

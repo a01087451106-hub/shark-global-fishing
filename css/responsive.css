@@ -26,6 +26,7 @@
     .diff-select { flex-direction: column; align-items: stretch; gap: 6px; }
     .diff-btn small { font-size: 0.68rem; }
     .nav-link { padding: 6px 8px; font-size: 0.72rem; }
+    .nav-guide { display: none; }   /* 좁은 화면은 메인 메뉴의 📖 게임 가이드 버튼 사용 */
 
     .screen { padding: 14px 12px 30px; }
     .screen-bar h2 { font-size: 1.12rem; }

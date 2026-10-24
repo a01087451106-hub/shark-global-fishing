@@ -66,6 +66,7 @@ a { color: inherit; }
     transition: background 0.2s, border-color 0.2s;
 }
 .nav-link:hover { background: rgba(79, 209, 255, 0.14); border-color: var(--sea-light); }
+.nav-guide { background: linear-gradient(135deg, #7b2ff7, #f107a3); border-color: transparent; }
 .nav-yt { background: #c4161c; border-color: #c4161c; }
 .nav-yt:hover { background: #e0262c; border-color: #e0262c; }
 .nav-lang { color: inherit; font-family: inherit; cursor: pointer; }
