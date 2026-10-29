@@ -473,6 +473,8 @@ const App = {
         if (this.equipTab.startsWith("rod-")) { kind = "rod"; items = Equip.rodsFor(this.equipTab.split("-")[1]); }
         else if (this.equipTab === "reel") { items = D.reels; kind = "reel"; }
         else { kind = "lure"; items = Equip.luresFor(this.equipTab.split("-")[1]); }
+        /* 보유 중인 장비를 맨 위로 */
+        items = items.slice().sort((a, b) => (Shop.isOwned(b) ? 1 : 0) - (Shop.isOwned(a) ? 1 : 0));
         const grid = U.$("#equip-grid");
         grid.innerHTML = items.map(it => Equip.card(it, kind, {})).join("");
         Equip.bindList(grid, null, () => this.renderEquipment());
