@@ -12,7 +12,8 @@ SHARK_DATA.news = [
     {
         id: 11, date: "2026.10.29",
         items: [
-            ["🐟", "더 실감나는 파이팅", "물고기가 라인을 차고 나갈 때 몸을 돌려 머리를 바깥쪽으로 향하고 끌고 나가요!", "More realistic fights", "When a fish runs and peels line, it now turns and swims away head-first!"]
+            ["🐟", "더 실감나는 파이팅", "물고기가 라인을 차고 나갈 때 몸을 돌려 머리를 바깥쪽으로 향하고 끌고 나가요!", "More realistic fights", "When a fish runs and peels line, it now turns and swims away head-first!"],
+            ["🎣", "내 장비 먼저 보기", "장비를 고를 때 내가 가진 낚시대 · 릴이 맨 위에 보여요.", "Your gear first", "When choosing gear, the rods and reels you own now appear at the top."]
         ]
     },
     {

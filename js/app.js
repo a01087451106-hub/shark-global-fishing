@@ -403,6 +403,8 @@ const App = {
             if (items.length === 1 && !st.reel) { st.reel = items[0]; return this.renderGear(); }   // 릴이 하나뿐이면 자동 선택
         }
         if (this.gearStep === "lure") items = Equip.luresFor(method, fish.id);
+        /* 보유 중인 장비를 맨 위로 (그 안에서는 추천 순서 유지) */
+        items = items.slice().sort((a, b) => (Shop.isOwned(b) ? 1 : 0) - (Shop.isOwned(a) ? 1 : 0));
         const lureNote = this.gearStep === "lure"
             ? `<p class="muted small center">${method === "casting" ? L("🎯 CASTING: 펜슬 계열 루어만 표시됩니다", "🎯 CASTING: only pencil-type lures are shown") : L("⚓ JIGGING: 메탈지그 계열 루어만 표시됩니다", "⚓ JIGGING: only metal jig-type lures are shown")} · ${L("오늘 유난히 잘 먹히는 루어가 있을지도...?", "Maybe one lure is especially hot today...?")}</p>` : "";
         const reelNote = this.gearStep === "reel" && items.length === 1
