@@ -10,6 +10,12 @@ window.SHARK_DATA = window.SHARK_DATA || {};
 
 SHARK_DATA.news = [
     {
+        id: 11, date: "2026.10.29",
+        items: [
+            ["🐟", "더 실감나는 파이팅", "물고기가 라인을 차고 나갈 때 몸을 돌려 머리를 바깥쪽으로 향하고 끌고 나가요!", "More realistic fights", "When a fish runs and peels line, it now turns and swims away head-first!"]
+        ]
+    },
+    {
         id: 10, date: "2026.10.16",
         items: [
             ["💬", "카카오로 시작하기", "이제 카카오 계정으로 한 번에 로그인할 수 있어요!", "Log in with Kakao", "You can now log in with your Kakao account in one tap!"]

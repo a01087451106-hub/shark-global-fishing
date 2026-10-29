@@ -541,10 +541,17 @@ const Scene = {
         const len = 84 + gi * 22;
         const tip = F.tip;
         const run = Battle.s && (Battle.running || Battle.s.mode === "shake");
-        const ang = F.phase === "landing" ? Math.PI + 0.25 : Math.atan2(p.y - tip.y, p.x - tip.x) + Math.PI;  // 머리가 줄 쪽을 향함
+        let ang = F.phase === "landing" ? Math.PI + 0.25 : Math.atan2(p.y - tip.y, p.x - tip.x) + Math.PI;  // 머리가 줄 쪽을 향함
+        let squash = 1;
+        /* 라인이 풀리는 동안(질주)은 머리를 사람 반대쪽으로 돌려 끌고 나감. 돌아서는 동안 몸이 짧아 보이게(원근) */
+        const turn = F.phase === "fight" ? (F.headTurn || 0) : 0;
+        if (turn > 0.01) {
+            if (turn > 0.5) ang -= Math.PI;
+            squash = Math.max(0.22, Math.abs(Math.cos(turn * Math.PI)));
+        }
         const flap = F.t * (run ? 22 : 11);
-        /* 몸통이 바깥쪽으로 → 머리가 p */
-        this.drawFishAt(c, fish, p.x, p.y, len, ang, flap, { headAnchor: true, alpha: 1, murk: p.y > F.surfaceY ? U.clamp((p.y - F.surfaceY) / (F.H - F.surfaceY), 0, 1) * 0.35 : 0 });
+        /* 머리가 p (줄이 묶인 입). 평소엔 몸통이 바깥쪽, 질주 땐 몸통이 사람 쪽 */
+        this.drawFishAt(c, fish, p.x, p.y, len, ang, flap, { headAnchor: true, squash, alpha: 1, murk: p.y > F.surfaceY ? U.clamp((p.y - F.surfaceY) / (F.H - F.surfaceY), 0, 1) * 0.35 : 0 });
         /* 물보라 (수면 근처) */
         if (Math.abs(p.y - F.surfaceY) < 30 && Math.random() < 0.5) {
             F.particles.push({ x: p.x + U.rand(-10, 10), y: F.surfaceY, vx: U.rand(-50, 50), vy: U.rand(-120, -40), life: U.rand(0.3, 0.7), r: U.rand(1, 2.6), c: "rgba(240,250,255,0.9)" });
@@ -604,6 +611,7 @@ const Scene = {
         c.rotate(ang);
         /* 머리가 +x 방향. 위아래가 뒤집히지 않게 */
         if (Math.cos(ang) < 0) c.scale(1, -1);
+        if (opts.squash) c.scale(opts.squash, 1);                 // 몸을 돌리는 중: 길이 방향만 짧게
         if (opts.headAnchor) c.translate(-len * 0.0, 0);
         else c.translate(len * 0.5, 0);
         c.globalAlpha = opts.alpha == null ? 1 : opts.alpha;

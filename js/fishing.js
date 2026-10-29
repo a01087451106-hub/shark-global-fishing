@@ -408,6 +408,7 @@ const Fishing = {
         const d = this.method === "jigging" ? this.depth : this.dist;
         Battle.start(this.catchObj, d);
         this.phase = "fight";
+        this.headTurn = 0;                                      // 0 = 머리가 사람 쪽, 1 = 라인 차고 나가며 반대쪽
         U.$("#fight-hud").classList.add("show");
         this.setControls([{ id: "reel", label: "⟳ REEL", sub: L("누르고 있기 · RUN! 때는 손 떼기", "Hold · let go on RUN!"), cls: "btn-primary btn-wide", hold: true, key: "Space" }]);
     },
@@ -417,6 +418,7 @@ const Fishing = {
         const s = Battle.s;
         Haptic.fight(dt, s, this.reeling);                      // 손맛 (진동)
         this.fightFeel(s);                                      // 손맛 (화면 흔들림 · 저음)
+        this.headTurn += ((Battle.running ? 1 : 0) - this.headTurn) * Math.min(1, dt * 4);   // 라인이 풀릴 때 몸을 돌려 바깥쪽으로
         U.$("#fh-tension").style.width = U.clamp(s.tension, 0, 100) + "%";
         U.$("#fh-tension").className = s.tension > 88 ? "danger" : s.tension > 65 ? "warn" : "";
         U.$("#fh-stamina").style.width = s.stamina + "%";
