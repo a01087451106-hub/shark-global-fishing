@@ -20,6 +20,7 @@ const App = {
         this.initModal();
         Fishing.init();
         Online.init();
+        this.initInstall();
 
         U.$$("[data-go]").forEach(b => b.addEventListener("click", () => {
             Sound.click();
@@ -191,6 +192,44 @@ const App = {
         const kst = (new Date().getUTCHours() + 9) % 24;
         const feeding = (kst >= 5 && kst < 8) || (kst >= 17 && kst < 20);
         return `<span class="tide-note">🌙 ${L("오늘 물때", "Today's tide")} · ${L("동해·남해·제주", "East·South·Jeju")} <b>${te.name}</b> (${te.kind}) · ${L("서해", "West")} <b>${tw.name}</b>${next}${feeding ? ` · <b class="feeding">🌅 ${L("지금 피딩타임!", "Feeding time now!")}</b>` : ""}</span>`;
+    },
+
+    /* ---------------- 홈 화면에 앱으로 설치 ---------------- */
+    initInstall() {
+        if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(() => {});
+        const standalone = window.matchMedia("(display-mode: standalone)").matches || navigator.standalone;
+        if (standalone) return;   // 이미 앱으로 실행 중
+        const btn = U.$("#btn-install");
+        const ios = /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+        const mobile = ios || /android/i.test(navigator.userAgent);
+        if (mobile) btn.hidden = false;
+        /* 안드로이드 크롬 등: 브라우저가 설치 창을 띄울 수 있으면 그걸 사용 */
+        window.addEventListener("beforeinstallprompt", e => { e.preventDefault(); this.installPrompt = e; btn.hidden = false; });
+        window.addEventListener("appinstalled", () => { this.installPrompt = null; btn.hidden = true; });
+        btn.addEventListener("click", () => {
+            Sound.click();
+            if (this.installPrompt) {
+                this.installPrompt.prompt();
+                this.installPrompt.userChoice.finally(() => { this.installPrompt = null; });
+            } else this.openInstallGuide(ios);
+        });
+    },
+
+    openInstallGuide(ios) {
+        const steps = ios
+            ? [L("<b>사파리</b>로 이 페이지를 열어요", "Open this page in <b>Safari</b>"),
+               L("아래쪽 <b>공유 버튼</b>(네모에 ↑ 화살표)을 눌러요", "Tap the <b>Share</b> button (square with ↑)"),
+               L("<b>홈 화면에 추가</b>를 누르고 <b>추가</b>를 눌러요", "Tap <b>Add to Home Screen</b>, then <b>Add</b>")]
+            : [L("브라우저 오른쪽 위 <b>⋮ 메뉴</b>를 눌러요", "Tap the browser <b>⋮ menu</b> (top right)"),
+               L("<b>홈 화면에 추가</b> 또는 <b>앱 설치</b>를 눌러요", "Tap <b>Add to Home screen</b> or <b>Install app</b>"),
+               L("<b>추가</b>(설치)를 누르면 끝!", "Tap <b>Add</b> (Install) and you're done!")];
+        this.openModal(`
+            <div class="detail help">
+                <h3>📲 ${L("앱으로 설치하기", "Install as an App")}</h3>
+                <p>${L("홈 화면에 🐟 참치 아이콘이 생기고, 누르면 주소창 없이 바로 게임이 열려요.", "A 🐟 tuna icon appears on your home screen and opens the game full screen.")}</p>
+                <ol class="steps">${steps.map(s => `<li>${s}</li>`).join("")}</ol>
+                <p class="muted small">${L("💡 로그인해 두면 어느 기기에서든 기록이 이어져요.", "💡 Log in to keep your records on any device.")}</p>
+            </div>`);
     },
 
     confirmReset() {

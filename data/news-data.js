@@ -10,6 +10,12 @@ window.SHARK_DATA = window.SHARK_DATA || {};
 
 SHARK_DATA.news = [
     {
+        id: 12, date: "2026.10.30",
+        items: [
+            ["📲", "앱으로 설치하기", "메인 메뉴의 [📲 앱으로 설치]를 누르면 홈 화면에 🐟 참치 아이콘이 생겨요. 누르면 주소창 없이 바로 게임이 열려요!", "Install as an app", "Tap [📲 Install App] in the main menu to add a 🐟 tuna icon to your home screen and play full screen!"]
+        ]
+    },
+    {
         id: 11, date: "2026.10.29",
         items: [
             ["🐟", "더 실감나는 파이팅", "물고기가 라인을 차고 나갈 때 몸을 돌려 머리를 바깥쪽으로 향하고 끌고 나가요!", "More realistic fights", "When a fish runs and peels line, it now turns and swims away head-first!"],

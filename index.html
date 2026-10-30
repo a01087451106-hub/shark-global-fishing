@@ -12,6 +12,13 @@
     <meta property="og:title" content="SHARK GLOBAL FISHING · 샤크 글로벌 피싱">
     <meta property="og:description" content="SHARK GLOBAL FISHING - 전 세계 바다낚시 웹게임 (샤크 신동만 · SHARK COMPANY)">
     <link rel="icon" href="assets/images/ui/logo.svg" type="image/svg+xml">
+    <!-- 홈 화면에 추가 (앱처럼 실행) -->
+    <link rel="manifest" href="manifest.webmanifest">
+    <link rel="apple-touch-icon" href="assets/images/ui/apple-touch-icon.png">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="샤크피싱">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/animations.css">
     <link rel="stylesheet" href="css/responsive.css">
@@ -102,6 +109,7 @@
                 <button class="menu-btn" data-go="achieve"><span class="mi">🎖</span><span class="ml" data-en="Achievements">업적 · 칭호</span><small data-en="Bonus gold · titles">보너스 골드 · 칭호</small></button>
             </div>
             <div class="menu-small">
+                <button class="btn btn-ghost btn-sm" id="btn-install" hidden data-en="📲 Install App">📲 앱으로 설치</button>
                 <button class="btn btn-ghost btn-sm" id="btn-news" data-en="🆕 What's New">🆕 업데이트 소식</button>
                 <button class="btn btn-ghost btn-sm" id="btn-help" data-en="❓ How to Play">❓ 게임 방법</button>
                 <a class="btn btn-ghost btn-sm" data-link="GAME_GUIDE_URL" data-en="📖 Game Guide">📖 게임 가이드</a>
