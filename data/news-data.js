@@ -12,7 +12,7 @@ SHARK_DATA.news = [
     {
         id: 12, date: "2026.10.30",
         items: [
-            ["📲", "앱으로 설치하기", "메인 메뉴의 [📲 앱으로 설치]를 누르면 홈 화면에 🐟 참치 아이콘이 생겨요. 누르면 주소창 없이 바로 게임이 열려요!", "Install as an app", "Tap [📲 Install App] in the main menu to add a 🐟 tuna icon to your home screen and play full screen!"]
+            ["📲", "앱으로 설치하기", "첫 화면이나 메인 메뉴의 [📲 앱으로 설치]를 누르면 홈 화면에 🐟 참치 아이콘이 생겨요. 누르면 주소창 없이 바로 게임이 열려요!", "Install as an app", "Tap [📲 Install App] on the start screen or main menu to add a 🐟 tuna icon to your home screen and play full screen!"]
         ]
     },
     {
